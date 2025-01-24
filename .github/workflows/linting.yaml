@@ -11,7 +11,7 @@ jobs:
 
             - uses: actions/setup-node@v4
 
-            - run: npm run ci:all
+            - run: npm install
 
             - run: npm run lint:prettier:check
     eslint:
