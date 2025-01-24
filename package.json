@@ -1,22 +1,26 @@
 {
-    "name": "rs-solutions-challenge",
-    "version": "1.0.0",
-    "scripts": {
-        "start:backend": "cd ./back-end && npm run start",
-        "dev:frontend": "cd ./front-end && npm run dev",
-        "install:backend": "cd ./back-end && npm install",
-        "install:frontend": "cd ./front-end && npm install",
-        "install:all": "npm run install:backend && npm run install:frontend",
-        "ci:backend": "cd ./back-end && npm ci",
-        "ci:frontend": "cd ./front-end && npm ci",
-        "ci:all": "npm run ci:backend && npm run ci:frontend",
-        "lint:prettier:check": "prettier --check .",
-        "lint:prettier:fix": "prettier --write .",
-        "lint:eslint:backend": "cd ./back-end && npm run lint",
-        "lint:eslint:frontend": "cd ./front-end && npm run lint",
-        "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend"
-    },
-    "devDependencies": {
-        "prettier": "^3.4.2"
-    }
+  "name": "rs-solutions-challenge",
+  "version": "1.0.0",
+  "scripts": {
+    "start:backend": "cd ./back-end && npm run start",
+    "dev:frontend": "cd ./front-end && npm run dev",
+    "install:backend": "cd ./back-end && npm install",
+    "install:frontend": "cd ./front-end && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "ci:backend": "cd ./back-end && npm ci",
+    "ci:frontend": "cd ./front-end && npm ci",
+    "ci:all": "npm run ci:backend && npm run ci:frontend",
+    "lint:prettier:check": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:eslint:backend": "cd ./back-end && npm run lint",
+    "lint:eslint:frontend": "cd ./front-end && npm run lint",
+    "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2"
+  }
 }
