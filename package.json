@@ -7,11 +7,14 @@
         "install:backend": "cd ./back-end && npm install",
         "install:frontend": "cd ./front-end && npm install",
         "install:all": "npm run install:backend && npm run install:frontend",
+        "ci:backend": "cd ./back-end && npm ci",
+        "ci:frontend": "cd ./front-end && npm ci",
+        "ci:all": "npm run ci:backend && npm run ci:frontend",
         "lint:prettier:check": "prettier --check .",
         "lint:prettier:fix": "prettier --write .",
         "lint:eslint:backend": "cd ./back-end && npm run lint",
         "lint:eslint:frontend": "cd ./front-end && npm run lint",
-        "lint:eslint:all": "npm run lint:eslint:backend && lint:eslint:frontend"
+        "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend"
     },
     "devDependencies": {
         "prettier": "^3.4.2"
