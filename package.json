@@ -1,0 +1,11 @@
+{
+    "name": "rs-solutions-challenge",
+    "version": "1.0.0" ,
+    "scripts": {
+        "start:backend": "cd ./back-end && npm run start",
+        "dev:frontend": "cd ./front-end && npm run dev",
+        "install:backend": "cd ./back-end && npm install",
+        "install:frontend": "cd ./front-end && npm install",
+        "install:all": "npm run install:backend && npm run install:frontend"
+    }
+}
