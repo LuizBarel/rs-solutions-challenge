@@ -14,9 +14,21 @@
         "lint:prettier:fix": "prettier --write .",
         "lint:eslint:backend": "cd ./back-end && npm run lint",
         "lint:eslint:frontend": "cd ./front-end && npm run lint",
-        "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend"
+        "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend",
+        "prepare": "husky",
+        "commit": "cz"
     },
     "devDependencies": {
+        "@commitlint/cli": "^19.6.1",
+        "@commitlint/config-conventional": "^19.6.0",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "husky": "^9.1.7",
         "prettier": "^3.4.2"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
     }
 }
