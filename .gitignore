@@ -1,0 +1,4 @@
+node_modules
+
+# Prettier ignore
+front-end/.next
