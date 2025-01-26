@@ -6,7 +6,7 @@
         "dev:frontend": "cd ./front-end && npm run dev",
         "install:backend": "cd ./back-end && npm install",
         "install:frontend": "cd ./front-end && npm install",
-        "install:all": "npm run install:backend && npm run install:frontend",
+        "install:all": "npm install && npm run install:backend && npm run install:frontend",
         "ci:backend": "cd ./back-end && npm ci",
         "ci:frontend": "cd ./front-end && npm ci",
         "ci:all": "npm run ci:backend && npm run ci:frontend",
@@ -16,7 +16,13 @@
         "lint:eslint:frontend": "cd ./front-end && npm run lint",
         "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend",
         "prepare": "husky",
-        "commit": "cz"
+        "commit": "cz",
+        "docker:up": "docker compose -f infra/compose.yaml up -d",
+        "docker:start": "docker compose -f infra/compose.yaml start",
+        "docker:stop": "docker compose -f infra/compose.yaml stop",
+        "docker:down": "docker compose -f infra/compose.yaml down",
+        "migrations:create": "node-pg-migrate create -m infra/migrations",
+        "migrations:up": "node-pg-migrate up -m infra/migrations"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.6.1",
@@ -24,11 +30,16 @@
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",
         "husky": "^9.1.7",
+        "node-pg-migrate": "^7.9.0",
+        "pg": "^8.13.1",
         "prettier": "^3.4.2"
     },
     "config": {
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
         }
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7"
     }
 }
