@@ -3,12 +3,15 @@
 </div>
 
 # RS Solutions Challenge
+
 Este repositório irá conter os arquivos fonte referente ao projeto RS Solutions Challenge.
 
 ## 📌 Sobre
+
 Esse projeto é um desafio estilo Hackathon proposto pela empresa <a href="https://www.rssolutions.com.br/">RS Solutions</a> em que consiste no desenvolvimento de uma aplicação web full-stack, trabalhando na criação de um sistema de Dashboard para visualização dos dados provenientes da <a href="https://integration.plataformaseru.com.br/v1/docs">API Seru</a> (API mantida pela própria empresa).
 
 ## ⚙ Tecnologias
+
 <div>
     <h3>Front-End</h3>
     <img src="https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" /> &nbsp
@@ -29,6 +32,7 @@ Esse projeto é um desafio estilo Hackathon proposto pela empresa <a href="https
 </div>
 
 ## 🤝 Colaboradores
+
 <table>
   <tr>
     <td align="center">
@@ -55,5 +59,5 @@ Esse projeto é um desafio estilo Hackathon proposto pela empresa <a href="https
         </sub>
       </a>
     </td>
-  </tr>
+  </tr>
 </table>
