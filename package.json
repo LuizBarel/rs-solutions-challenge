@@ -1,9 +1,10 @@
 {
     "name": "rs-solutions-challenge",
     "version": "1.0.0",
+    "type": "module",
     "scripts": {
-        "start:backend": "cd ./back-end && npm run start",
-        "dev:frontend": "cd ./front-end && npm run dev",
+        "start:backend": "npm run services:wait:database && cd ./back-end && npm run start",
+        "dev:frontend": "npm run services:wait:database && cd ./front-end && npm run dev",
         "install:backend": "cd ./back-end && npm install",
         "install:frontend": "cd ./front-end && npm install",
         "install:all": "npm install && npm run install:backend && npm run install:frontend",
@@ -17,12 +18,18 @@
         "lint:eslint:all": "npm run lint:eslint:backend && npm run lint:eslint:frontend",
         "prepare": "husky",
         "commit": "cz",
+        "services:wait:database": "node infra/scripts/wait-for-database.js",
         "docker:up": "docker compose -f infra/compose.yaml up -d",
         "docker:start": "docker compose -f infra/compose.yaml start",
         "docker:stop": "docker compose -f infra/compose.yaml stop",
         "docker:down": "docker compose -f infra/compose.yaml down",
         "migrations:create": "node-pg-migrate create -m infra/migrations",
-        "migrations:up": "node-pg-migrate up -m infra/migrations"
+        "migrations:up": "node-pg-migrate up -m infra/migrations",
+        "test": "cd ./back-end && npm run test",
+        "test:watch": "cd ./back-end && npm run test:watch"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.6.1",
@@ -38,8 +45,5 @@
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
         }
-    },
-    "dependencies": {
-        "dotenv": "^16.4.7"
     }
 }
