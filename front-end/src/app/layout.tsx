@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Montserrat } from 'next/font/google';
+import { Open_Sans } from 'next/font/google';
 import '@/src/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -7,13 +7,13 @@ export const metadata: Metadata = {
     description: 'Desafio da empresa RS Solutions estilo Hackathon',
 };
 
-const montserrat = Montserrat({
+const open_sans = Open_Sans({
     subsets: ['latin'],
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="pt-BR" className={montserrat.className}>
+        <html lang="pt-BR" className={open_sans.className}>
             <body>
                 <div>{children}</div>
             </body>
