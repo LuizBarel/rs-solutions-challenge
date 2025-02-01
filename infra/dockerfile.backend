@@ -1,0 +1,9 @@
+FROM node:22.13.1-alpine
+
+WORKDIR /back-root
+COPY ../back-end/package.json ../back-end/package-lock.json ./
+RUN npm install
+COPY ../back-end .
+EXPOSE 3001
+
+CMD [ "npm", "run", "start" ]

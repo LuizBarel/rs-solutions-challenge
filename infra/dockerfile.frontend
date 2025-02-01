@@ -1,0 +1,9 @@
+FROM node:22.13.1-alpine
+
+WORKDIR /front-root
+COPY ../front-end/package.json ../front-end/package-lock.json ./
+RUN npm install
+COPY ../front-end .
+EXPOSE 3000
+
+CMD [ "npm", "run", "dev" ]
