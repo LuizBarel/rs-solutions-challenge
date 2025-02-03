@@ -50,7 +50,7 @@ export default function Login() {
             </section>
 
             <section className="gradient-background relative hidden md:flex flex-col justify-center items-center text-center 2xl:gap-14 md:gap-7">
-                <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 flex flex-col gap-7">
+                <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7">
                     <h1 className="2xl:text-6xl lg:text-5xl md:text-4xl font-semibold text-primary-100">
                         Seru Dasboard
                     </h1>
@@ -60,8 +60,12 @@ export default function Login() {
                     </p>
                 </div>
 
-                <div className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 flex justify-center">
-                    <Image src={pcMokcupImg} alt="Mockup do Dashboard" />
+                <div className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center">
+                    <Image
+                        src={pcMokcupImg}
+                        className="w-full h-full"
+                        alt="Mockup do Dashboard"
+                    />
                 </div>
 
                 <div className="absolute bottom-0 w-full h-[150px] black-gradient"></div>
