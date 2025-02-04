@@ -3,6 +3,9 @@
 
 import { useState } from 'react';
 
+import styles from './login.module.css';
+import clsx from 'clsx';
+
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -20,11 +23,21 @@ export default function Login() {
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
-                <div className="2xl:w-3/4 w-11/12 top-appear-animation">
+                <div
+                    className={clsx(
+                        '2xl:w-3/4 w-11/12',
+                        styles.top_appear_animation,
+                    )}
+                >
                     <Image src={brandImg} alt="Logo" width={130} />
                 </div>
 
-                <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16 left-appear-animation">
+                <div
+                    className={clsx(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16',
+                        styles.left_appear_animation,
+                    )}
+                >
                     <div className="flex flex-col gap-4">
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
                             Sign In
@@ -64,7 +77,12 @@ export default function Login() {
                     </div>
                 </div>
 
-                <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 bottom-appear-animation">
+                <div
+                    className={clsx(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12',
+                        styles.bottom_appear_animation,
+                    )}
+                >
                     <p className="text-gray-600 lg:text-md text-sm">
                         Não possui uma conta?
                         <Link
@@ -78,7 +96,12 @@ export default function Login() {
             </section>
 
             <section className="gradient-background relative hidden md:flex flex-col justify-center items-center text-center 2xl:gap-14 md:gap-7">
-                <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7 right-appear-animation">
+                <div
+                    className={clsx(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7',
+                        styles.right_appear_animation,
+                    )}
+                >
                     <h1 className="2xl:text-6xl lg:text-5xl md:text-4xl font-semibold text-primary-100">
                         Seru Dasboard
                     </h1>
@@ -88,7 +111,12 @@ export default function Login() {
                     </p>
                 </div>
 
-                <div className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center right-appear-animation">
+                <div
+                    className={clsx(
+                        '2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center',
+                        styles.right_appear_animation,
+                    )}
+                >
                     <Image
                         src={pcMokcupImg}
                         alt="Mockup do Dashboard"
