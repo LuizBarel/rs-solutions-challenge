@@ -1,3 +1,8 @@
+// Definindo o componente para ser renderizado no lado do cliente (client side)
+'use client';
+
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -6,8 +11,12 @@ import pcMokcupImg from '@/public/login/pc-dashboard-mockup.png';
 
 import { Input } from '@/src/components/ui/input';
 import { Button } from '@/src/components/ui/button';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export default function Login() {
+    // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
+    const [passwordVisibility, setPasswordVisibility] = useState(true);
+
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
@@ -29,7 +38,27 @@ export default function Login() {
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col gap-4">
                             <Input type="email" placeholder="E-mail" />
-                            <Input type="password" placeholder="Senha" />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={
+                                        passwordVisibility ? 'password' : 'text'
+                                    }
+                                    placeholder="Senha"
+                                />
+                                <div
+                                    className="text-gray-500 absolute top-4 right-4 cursor-pointer transition hover:text-gray-600"
+                                    onClick={() =>
+                                        setPasswordVisibility((prev) => !prev)
+                                    }
+                                >
+                                    {passwordVisibility ? (
+                                        <IoMdEye size={24} />
+                                    ) : (
+                                        <IoMdEyeOff size={24} />
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <Button variant="default">Entrar</Button>
