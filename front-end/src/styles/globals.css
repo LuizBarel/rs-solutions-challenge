@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Página de Login e Registre-se */
-
 @layer utilities {
     .center {
         @apply flex justify-center items-center;
@@ -14,7 +12,9 @@
     }
 }
 
-.input-box-shadow {
+/* Página de Login e Registre-se */
+
+.button-shadow {
     box-shadow: 0px 2px 8px 0px rgba(255, 255, 255, 0.25) inset;
 }
 
@@ -32,68 +32,4 @@
         rgba(21, 22, 26, 0) 0%,
         rgba(21, 22, 26, 0.8) 100%
     );
-}
-
-@keyframes leftAppear {
-    from {
-        opacity: 0;
-        transform: translateX(-200px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.left-appear-animation {
-    animation: leftAppear 1s ease-in-out;
-}
-
-@keyframes rightAppear {
-    from {
-        opacity: 0;
-        transform: translateX(500px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.right-appear-animation {
-    animation: rightAppear 1s ease-in-out;
-}
-
-@keyframes topAppear {
-    0% {
-        opacity: 0;
-        transform: translateY(-110px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.top-appear-animation {
-    animation: topAppear 1s ease-in-out;
-}
-
-@keyframes bottomAppear {
-    0% {
-        opacity: 0;
-        transform: translateY(110px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.bottom-appear-animation {
-    animation: bottomAppear 1s ease-in-out;
 }

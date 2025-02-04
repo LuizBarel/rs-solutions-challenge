@@ -10,7 +10,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    'bg-primary-700 text-primary-100 border border-primary-800 input-box-shadow hover:bg-primary-800',
+                    'bg-primary-700 text-primary-100 border border-primary-800 button-shadow hover:bg-primary-800',
             },
             size: {
                 default: 'p-4',
