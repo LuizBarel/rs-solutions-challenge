@@ -3,6 +3,9 @@
 
 import { useState } from 'react';
 
+import styles from './register.module.css';
+import clsx from 'clsx';
+
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -29,7 +32,12 @@ export default function Register() {
                 </div>
 
                 <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16">
-                    <div className="flex flex-col gap-4">
+                    <div
+                        className={clsx(
+                            'flex flex-col gap-4',
+                            styles.top_text_appear,
+                        )}
+                    >
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
                             Sign Up
                         </h1>
@@ -41,7 +49,11 @@ export default function Register() {
 
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col gap-4">
-                            <Input type="text" placeholder="Nome de Usuário" />
+                            <Input
+                                type="text"
+                                placeholder="Nome de Usuário"
+                                className={styles.top_input_appear}
+                            />
                             <Input type="email" placeholder="E-mail" />
                             <div className="relative">
                                 <Input
@@ -63,7 +75,12 @@ export default function Register() {
                                     )}
                                 </div>
                             </div>
-                            <div className="relative">
+                            <div
+                                className={clsx(
+                                    'relative',
+                                    styles.bottom_input_appear,
+                                )}
+                            >
                                 <Input
                                     type={
                                         confirmPasswordVisibility
@@ -89,7 +106,12 @@ export default function Register() {
                             </div>
                         </div>
 
-                        <Button variant="default">Registrar-se</Button>
+                        <Button
+                            variant="default"
+                            className={styles.bottom_button_appear}
+                        >
+                            Registrar-se
+                        </Button>
                     </div>
                 </div>
 
