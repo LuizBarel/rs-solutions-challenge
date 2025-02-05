@@ -1,7 +1,15 @@
-export default function Home() {
+import { SidebarProvider, SidebarTrigger } from '@/src/components/ui/sidebar';
+import { AppSidebar } from '@/src/components/layouts/app-sidebar';
+
+export default function Dashboard() {
     return (
         <>
-            <h1>Página Principal</h1>
+            <SidebarProvider>
+                <AppSidebar />
+                <main className="bg-gray-50 w-full">
+                    <SidebarTrigger />
+                </main>
+            </SidebarProvider>
         </>
     );
 }
