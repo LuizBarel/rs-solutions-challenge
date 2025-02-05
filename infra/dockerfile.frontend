@@ -1,6 +1,6 @@
 FROM node:22.13.1-alpine
 
-WORKDIR /front-root
+WORKDIR /front-end
 COPY ../front-end/package.json ../front-end/package-lock.json ./
 RUN npm install
 COPY ../front-end .
