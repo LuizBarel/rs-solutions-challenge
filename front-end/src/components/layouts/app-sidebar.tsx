@@ -29,6 +29,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 import { motion } from 'motion/react';
 
+import { useIsMobile } from '@/src/hooks/use-mobile';
+
 import { HiMiniChevronRight } from 'react-icons/hi2';
 import { LuChartColumn, LuLogOut } from 'react-icons/lu';
 import { FaRegUser } from 'react-icons/fa6';
@@ -43,6 +45,9 @@ export function AppSidebar() {
     // Estado da sidebar
     const { state } = useSidebar();
 
+    // Estado mobile
+    const isMobile = useIsMobile();
+
     // Estado do collapse
     const [isCollapse, setIsCollapse] = useState(true);
 
@@ -50,10 +55,15 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" className="border-gray-600">
             <SidebarHeader>
                 <Image
-                    src={state === 'expanded' ? brandImg : brandMinimalImg}
+                    src={
+                        !isMobile
+                            ? state === 'expanded'
+                                ? brandImg
+                                : brandMinimalImg
+                            : brandImg
+                    }
                     alt="Logo"
-                    width={state === 'expanded' ? 130 : 40}
-                    priority
+                    width={!isMobile ? (state === 'expanded' ? 130 : 40) : 130}
                 />
             </SidebarHeader>
 
@@ -78,7 +88,7 @@ export function AppSidebar() {
                                         ></motion.div>
                                     ) : null}
 
-                                    <Link href="/">
+                                    <Link href="/" scroll={false}>
                                         <Tooltip>
                                             <TooltipTrigger
                                                 asChild
@@ -97,7 +107,10 @@ export function AppSidebar() {
 
                                             <TooltipContent
                                                 side="right"
-                                                hidden={state === 'expanded'}
+                                                hidden={
+                                                    state === 'expanded' ||
+                                                    isMobile
+                                                }
                                             >
                                                 Dashboard
                                             </TooltipContent>
@@ -146,7 +159,7 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <Link href="#">
+                                <Link href="#" scroll={false}>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <SidebarMenuButton>
@@ -157,7 +170,9 @@ export function AppSidebar() {
 
                                         <TooltipContent
                                             side="right"
-                                            hidden={state === 'expanded'}
+                                            hidden={
+                                                state === 'expanded' || isMobile
+                                            }
                                         >
                                             Perfil
                                         </TooltipContent>
@@ -175,7 +190,9 @@ export function AppSidebar() {
 
                                     <TooltipContent
                                         side="right"
-                                        hidden={state === 'expanded'}
+                                        hidden={
+                                            state === 'expanded' || isMobile
+                                        }
                                     >
                                         Sair
                                     </TooltipContent>
