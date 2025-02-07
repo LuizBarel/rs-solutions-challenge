@@ -9,11 +9,11 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import brandImg from '@/public/brand/rssolutions-brand.png';
-import pcMokcupImg from '@/public/login/pc-dashboard-mockup.png';
+import brandImg from '@public/brand/rssolutions-brand.png';
+import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
-import { Input } from '@/src/components/ui/input';
-import { Button } from '@/src/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export default function Login() {

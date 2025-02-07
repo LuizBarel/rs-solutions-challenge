@@ -1,8 +1,8 @@
 // Definindo o componente para ser renderizado no lado do cliente (client side)
 'use client';
 
-import { SidebarProvider, SidebarTrigger } from '@/src/components/ui/sidebar';
-import { AppSidebar } from '@/src/components/layouts/app-sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/layouts/app-sidebar';
 
 import { HiOutlineUserCircle } from 'react-icons/hi2';
 

@@ -18,7 +18,7 @@ import {
     SidebarSeparator,
     SidebarTrigger,
     useSidebar,
-} from '@/src/components/ui/sidebar';
+} from '@/components/ui/sidebar';
 
 import {
     Collapsible,
@@ -30,7 +30,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 import { motion } from 'motion/react';
 
-import { useIsMobile } from '@/src/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { HiMiniChevronRight } from 'react-icons/hi2';
 import { LuChartColumn, LuLogOut } from 'react-icons/lu';

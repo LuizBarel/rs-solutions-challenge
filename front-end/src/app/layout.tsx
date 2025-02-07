@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Open_Sans } from 'next/font/google';
-import '@/src/styles/globals.css';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
     title: 'RS Solutions Challenge',
