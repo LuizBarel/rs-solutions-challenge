@@ -16,6 +16,7 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
     SidebarSeparator,
+    SidebarTrigger,
     useSidebar,
 } from '@/src/components/ui/sidebar';
 
@@ -52,7 +53,7 @@ export function AppSidebar() {
     const [isCollapse, setIsCollapse] = useState(true);
 
     return (
-        <Sidebar collapsible="icon" className="border-gray-600">
+        <Sidebar collapsible="icon" className="border-none">
             <SidebarHeader>
                 <Image
                     src={
@@ -64,10 +65,28 @@ export function AppSidebar() {
                     }
                     alt="Logo"
                     width={!isMobile ? (state === 'expanded' ? 130 : 40) : 130}
+                    priority
+                    suppressHydrationWarning
                 />
             </SidebarHeader>
 
             <SidebarContent>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <SidebarTrigger
+                            className="hidden md:flex"
+                            variant="sidebar_trigger"
+                            size="small"
+                        />
+                    </TooltipTrigger>
+
+                    <TooltipContent side="right">
+                        {state === 'expanded'
+                            ? 'Fechar barra lateral'
+                            : 'Abrir barra lateral'}
+                    </TooltipContent>
+                </Tooltip>
+
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
