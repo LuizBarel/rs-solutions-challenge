@@ -39,8 +39,8 @@ import { FaRegUser } from 'react-icons/fa6';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import brandImg from '@/public/brand/rssolutions-brand.png';
-import brandMinimalImg from '@/public/brand/rssolutions-brand-minimal.png';
+import brandImg from '@public/brand/rssolutions-brand.png';
+import brandMinimalImg from '@public/brand/rssolutions-brand-minimal.png';
 
 export function AppSidebar() {
     // Estado da sidebar
@@ -65,8 +65,7 @@ export function AppSidebar() {
                     }
                     alt="Logo"
                     width={!isMobile ? (state === 'expanded' ? 130 : 40) : 130}
-                    priority
-                    suppressHydrationWarning
+                    priority={false}
                 />
             </SidebarHeader>
 
@@ -147,7 +146,7 @@ export function AppSidebar() {
                                         >
                                             <SidebarMenuSub>
                                                 <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton href="#">
+                                                    <SidebarMenuSubButton href="#statistics">
                                                         Estatísticas
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>

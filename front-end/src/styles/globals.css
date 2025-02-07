@@ -18,10 +18,11 @@
     }
 }
 
-/* Shadcn UI Sidebar */
+/* Shadcn UI Root Colors */
 
 @layer base {
     :root {
+        /* Sidebar */
         --sidebar-background: 0 0% 100%;
         --sidebar-foreground: 225 3% 29%;
         --sidebar-primary: 240 5.9% 10%;
@@ -30,6 +31,10 @@
         --sidebar-accent-foreground: 228 11% 9%;
         --sidebar-border: 228 11% 9%;
         --sidebar-ring: 217.2 91.2% 59.8%;
+
+        /* Charts */
+        --chart-1: 219 67% 48%;
+        --chart-2: 207 84% 78%;
     }
     .dark {
         --sidebar-background: 240 5.9% 10%;
@@ -69,4 +74,8 @@
 
 .sidebar-trigger-shadow {
     filter: drop-shadow(-2px 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+.components-shadow {
+    box-shadow: -2px 2px 8px 0px rgba(0, 0, 0, 0.25);
 }

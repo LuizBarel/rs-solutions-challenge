@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
             </header>
 
-            <main className="w-full mt-[100px] p-8 bg-gray-50 border-t md:border-l border-gray-600 md:rounded-tl-lg">
+            <main className="flex flex-col gap-12 w-full mt-[100px] p-8 bg-gray-50 border-t md:border-l border-gray-600 md:rounded-tl-lg">
                 {children}
             </main>
         </SidebarProvider>
