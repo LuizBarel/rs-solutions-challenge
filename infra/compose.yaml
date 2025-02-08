@@ -1,10 +1,11 @@
 services:
     backend:
         container_name: backend
-        restart: always
         build:
             context: ..
             dockerfile: infra/dockerfile.backend
+        env_file:
+            - ../.env
         environment:
             - WATCHPACK_POLLING=true
         ports:
@@ -18,10 +19,11 @@ services:
 
     frontend:
         container_name: frontend
-        restart: always
         build:
             context: ..
             dockerfile: infra/dockerfile.frontend
+        env_file:
+            - ../.env
         environment:
             - WATCHPACK_POLLING=true
         ports:
@@ -35,7 +37,6 @@ services:
     database:
         container_name: postgres-db
         image: postgres:17
-        restart: always
         env_file:
             - ../.env
         ports:
