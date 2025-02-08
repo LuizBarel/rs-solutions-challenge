@@ -1,3 +1,5 @@
 ../front-end/.next/
 ../back-end/dist
+../front-end/node_modules
+../back-end/node_modules
 node_modules
