@@ -2,7 +2,7 @@ FROM node:22.13.1-alpine
 
 WORKDIR /front-end
 COPY ../front-end/package.json ../front-end/package-lock.json ./
-RUN npm install
+RUN npm ci
 COPY ../front-end .
 EXPOSE 3000
 
