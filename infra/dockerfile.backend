@@ -1,9 +1,10 @@
 FROM node:22.13.1-alpine
 
 WORKDIR /back-end
-COPY ../back-end/package.json ../back-end/package-lock.json ./
-RUN npm ci
+COPY ../back-end/package*.json ./
+RUN npm install
 COPY ../back-end .
+RUN npm run build
 EXPOSE 3001
 
-CMD [ "npm", "run", "start:dev" ]
+CMD ["node", "dist/main"]
