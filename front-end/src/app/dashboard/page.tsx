@@ -3,10 +3,16 @@
 
 import { LuBanknote, LuBox } from 'react-icons/lu';
 import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
-import { LiaCoinsSolid } from 'react-icons/lia';
+import { LiaChartPieSolid, LiaCoinsSolid } from 'react-icons/lia';
 import { BiBarChartAlt2 } from 'react-icons/bi';
 
-import { chartConfig, chartData } from './dashboard-data';
+import {
+    chartConfigBilling,
+    chartDataBilling,
+    chartDataChannelSales,
+    chartConfigChannelSales,
+} from './dashboard-data';
+
 import {
     ChartContainer,
     ChartLegend,
@@ -14,7 +20,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, Pie, PieChart, XAxis } from 'recharts';
 
 export default function Dashboard() {
     return (
@@ -127,17 +133,17 @@ export default function Dashboard() {
                     <div className="flex items-center gap-1 text-gray-900">
                         <BiBarChartAlt2 size={20} />
                         <h3 className="text-sm font-medium">
-                            GRÁFICO DE FATURAMENTO
+                            GRÁFICO DE FATURAMENTO (R$)
                         </h3>
                     </div>
 
                     <ChartContainer
-                        config={chartConfig}
+                        config={chartConfigBilling}
                         className="min-h-[200px] h-[400px] w-full"
                     >
                         <LineChart
                             accessibilityLayer
-                            data={chartData}
+                            data={chartDataBilling}
                             margin={{
                                 left: 12,
                                 right: 12,
@@ -181,6 +187,48 @@ export default function Dashboard() {
                             />
                         </LineChart>
                     </ChartContainer>
+                </div>
+            </section>
+
+            <section id="channels" className="flex flex-col gap-8">
+                <div className="flex flex-col gap-4">
+                    <h2 className="text-gray-900 text-xl font-semibold">
+                        Canais
+                    </h2>
+
+                    <div className="flex flex-col gap-4 p-3 bg-white rounded-lg components-shadow">
+                        <div className="flex items-center gap-1 text-gray-900">
+                            <LiaChartPieSolid size={20} />
+                            <h3 className="text-sm font-medium">
+                                GRÁFICO DE VENDAS POR CANAL (%)
+                            </h3>
+                        </div>
+
+                        <ChartContainer
+                            config={chartConfigChannelSales}
+                            className="aspect-square min-h-[200px] h-[400px]"
+                        >
+                            <PieChart>
+                                <ChartTooltip
+                                    cursor={false}
+                                    content={
+                                        <ChartTooltipContent
+                                            percentage={true}
+                                        />
+                                    }
+                                />
+
+                                <ChartLegend content={<ChartLegendContent />} />
+
+                                <Pie
+                                    data={chartDataChannelSales}
+                                    dataKey="sales"
+                                    nameKey="channel"
+                                    innerRadius={110}
+                                ></Pie>
+                            </PieChart>
+                        </ChartContainer>
+                    </div>
                 </div>
             </section>
         </>

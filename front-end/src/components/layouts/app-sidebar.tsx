@@ -53,7 +53,7 @@ export function AppSidebar() {
     const [isCollapse, setIsCollapse] = useState(true);
 
     return (
-        <Sidebar collapsible="icon" className="border-none">
+        <Sidebar collapsible="icon" className="border-none z-20">
             <SidebarHeader>
                 <Image
                     src={
@@ -152,7 +152,7 @@ export function AppSidebar() {
                                                 </SidebarMenuSubItem>
 
                                                 <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton href="#">
+                                                    <SidebarMenuSubButton href="#channels">
                                                         Canais
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>

@@ -32,7 +32,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <header
                 className={cn(
                     'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8',
-                    isScrolled ? 'border-b border-b-gray-600' : '',
+                    isScrolled
+                        ? 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10'
+                        : '',
                 )}
             >
                 <SidebarTrigger className="flex md:hidden" />

@@ -34,7 +34,9 @@
 
         /* Charts */
         --chart-1: 219 67% 48%;
-        --chart-2: 207 84% 78%;
+        --chart-2: 212 80% 60%;
+        --chart-3: 207 84% 78%;
+        --chart-4: 209 84% 93%;
     }
     .dark {
         --sidebar-background: 240 5.9% 10%;

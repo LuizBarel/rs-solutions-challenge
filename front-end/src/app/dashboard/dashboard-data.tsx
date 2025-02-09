@@ -1,6 +1,8 @@
 import { ChartConfig } from '@/components/ui/chart';
 
-export const chartData = [
+// Dados do Gráfico de Faturamento
+
+export const chartDataBilling = [
     { month: 'Janeiro', ano_atual: 186, ano_anterior: 80 },
     { month: 'Fevereiro', ano_atual: 305, ano_anterior: 200 },
     { month: 'Março', ano_atual: 237, ano_anterior: 120 },
@@ -15,13 +17,44 @@ export const chartData = [
     { month: 'Dezembro', ano_atual: 322, ano_anterior: 242 },
 ];
 
-export const chartConfig = {
+export const chartConfigBilling = {
     ano_atual: {
         label: 'Ano Atual',
         color: 'hsl(var(--chart-1))',
     },
     ano_anterior: {
-        label: 'Ano Ant.',
+        label: 'Ano Anterior',
         color: 'hsl(var(--chart-2))',
+    },
+} satisfies ChartConfig;
+
+// Dados do Gráfico de Vendas por Canal
+
+export const chartDataChannelSales = [
+    { channel: 'vitrineTotem', sales: 18, fill: 'var(--color-vitrineTotem)' },
+    { channel: 'pdvFacil', sales: 30, fill: 'var(--color-pdvFacil)' },
+    { channel: 'menuFacil', sales: 23, fill: 'var(--color-menuFacil)' },
+    { channel: 'voxline', sales: 29, fill: 'var(--color-voxline)' },
+];
+
+export const chartConfigChannelSales = {
+    sales: {
+        label: 'Vendas',
+    },
+    vitrineTotem: {
+        label: 'Vitrine Totem',
+        color: 'hsl(var(--chart-1))',
+    },
+    pdvFacil: {
+        label: 'Pdv Fácil',
+        color: 'hsl(var(--chart-2))',
+    },
+    menuFacil: {
+        label: 'Menu Fácil',
+        color: 'hsl(var(--chart-3))',
+    },
+    voxline: {
+        label: 'Voxline',
+        color: 'hsl(var(--chart-4))',
     },
 } satisfies ChartConfig;
