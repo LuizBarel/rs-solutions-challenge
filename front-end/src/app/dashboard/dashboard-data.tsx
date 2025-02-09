@@ -3,10 +3,10 @@ import { ChartConfig } from '@/components/ui/chart';
 // Dados do Gráfico de Faturamento
 
 export const chartDataBilling = [
-    { month: 'Janeiro', ano_atual: 186, ano_anterior: 80 },
+    { month: 'Janeiro', ano_atual: 186, ano_anterior: 801 },
     { month: 'Fevereiro', ano_atual: 305, ano_anterior: 200 },
     { month: 'Março', ano_atual: 237, ano_anterior: 120 },
-    { month: 'Abril', ano_atual: 73, ano_anterior: 190 },
+    { month: 'Abril', ano_atual: 731, ano_anterior: 190 },
     { month: 'Maio', ano_atual: 209, ano_anterior: 130 },
     { month: 'Junho', ano_atual: 214, ano_anterior: 140 },
     { month: 'Julho', ano_atual: 311, ano_anterior: 253 },
@@ -27,6 +27,27 @@ export const chartConfigBilling = {
         color: 'hsl(var(--chart-2))',
     },
 } satisfies ChartConfig;
+
+/**
+ * Função para formatar o tick do Gráfico de Faturamento
+ * @param value - Valor do tick
+ * @constant units - Array das unidades de medida
+ * @var unitIndex - Índice do array 'units'
+ * @return - Valor formatado
+ */
+export function tickFormatter(value: number) {
+    const units = ['K', 'M', 'B', 'T'];
+    let unitIndex = -1;
+
+    while (value >= 1000 && unitIndex < units.length - 1) {
+        value /= 1000;
+        unitIndex++;
+    }
+
+    return unitIndex >= 0
+        ? `${Math.floor(value)}${units[unitIndex]}`
+        : value.toString();
+}
 
 // Dados do Gráfico de Vendas por Canal
 

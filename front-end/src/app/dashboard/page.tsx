@@ -11,6 +11,7 @@ import {
     chartDataBilling,
     chartDataChannelSales,
     chartConfigChannelSales,
+    tickFormatter,
 } from './dashboard-data';
 
 import {
@@ -20,7 +21,15 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
-import { CartesianGrid, Line, LineChart, Pie, PieChart, XAxis } from 'recharts';
+import {
+    CartesianGrid,
+    Line,
+    LineChart,
+    Pie,
+    PieChart,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 export default function Dashboard() {
     return (
@@ -145,11 +154,10 @@ export default function Dashboard() {
                             accessibilityLayer
                             data={chartDataBilling}
                             margin={{
-                                left: 12,
-                                right: 12,
+                                right: 32,
                             }}
                         >
-                            <CartesianGrid vertical={false} />
+                            <CartesianGrid horizontal={false} />
 
                             <XAxis
                                 dataKey="month"
@@ -157,6 +165,14 @@ export default function Dashboard() {
                                 axisLine={false}
                                 tickMargin={4}
                                 tickFormatter={(value) => value.slice(0, 3)}
+                            />
+
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickCount={6}
+                                tickFormatter={(value) => tickFormatter(value)}
                             />
 
                             <ChartTooltip
