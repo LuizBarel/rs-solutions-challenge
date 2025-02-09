@@ -2,7 +2,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layouts/app-sidebar';
@@ -12,6 +14,9 @@ import { HiOutlineUserCircle } from 'react-icons/hi2';
 export default function Layout({ children }: { children: React.ReactNode }) {
     // Estado para controlar o scroll da página
     const [isScrolled, setIsScrolled] = useState(false);
+
+    // Estado para mobile
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,10 +36,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             <header
                 className={cn(
-                    'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8',
-                    isScrolled
-                        ? 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10'
-                        : '',
+                    !isMobile
+                        ? isScrolled
+                            ? 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10'
+                            : 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8'
+                        : 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10',
                 )}
             >
                 <SidebarTrigger className="flex md:hidden" />
@@ -45,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
             </header>
 
-            <main className="flex flex-col gap-12 w-full mt-[100px] p-8 bg-gray-50 border-t md:border-l border-gray-600 md:rounded-tl-lg">
+            <main className="flex flex-col gap-12 w-full mt-[100px] p-8 bg-gray-50 md:border-t md:border-l md:border-gray-600 md:rounded-tl-lg">
                 {children}
             </main>
         </SidebarProvider>
