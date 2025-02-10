@@ -3,8 +3,7 @@
 
 import { useState } from 'react';
 
-import styles from './login.module.css';
-import clsx from 'clsx';
+import { motion } from 'motion/react';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -23,20 +22,26 @@ export default function Login() {
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
-                <div
-                    className={clsx(
-                        '2xl:w-3/4 w-11/12',
-                        styles.top_appear_animation,
-                    )}
+                <motion.div
+                    className="2xl:w-3/4 w-11/12"
+                    initial={{ opacity: 0, y: -110 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                        duration: 1,
+                        ease: 'easeInOut',
+                    }}
                 >
                     <Image src={brandImg} alt="Logo" width={130} />
-                </div>
+                </motion.div>
 
-                <div
-                    className={clsx(
-                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16',
-                        styles.left_appear_animation,
-                    )}
+                <motion.div
+                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16"
+                    initial={{ opacity: 0, x: -200 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                        duration: 1,
+                        ease: 'easeInOut',
+                    }}
                 >
                     <div className="flex flex-col gap-4">
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
@@ -75,13 +80,16 @@ export default function Login() {
 
                         <Button variant="default">Entrar</Button>
                     </div>
-                </div>
+                </motion.div>
 
-                <div
-                    className={clsx(
-                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12',
-                        styles.bottom_appear_animation,
-                    )}
+                <motion.div
+                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12"
+                    initial={{ opacity: 0, y: 110 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                        duration: 1,
+                        ease: 'easeInOut',
+                    }}
                 >
                     <p className="text-gray-600 lg:text-md text-sm">
                         Não possui uma conta?
@@ -92,15 +100,18 @@ export default function Login() {
                             Registre-se
                         </Link>
                     </p>
-                </div>
+                </motion.div>
             </section>
 
             <section className="gradient-background relative hidden md:flex flex-col justify-center items-center text-center 2xl:gap-14 md:gap-7">
-                <div
-                    className={clsx(
-                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7',
-                        styles.right_appear_animation,
-                    )}
+                <motion.div
+                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7"
+                    initial={{ opacity: 0, x: 500 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                        duration: 1,
+                        ease: 'easeInOut',
+                    }}
                 >
                     <h1 className="2xl:text-6xl lg:text-5xl md:text-4xl font-semibold text-primary-100">
                         Seru Dasboard
@@ -109,20 +120,23 @@ export default function Login() {
                         Um sistema que oferece um dashboard completo para que
                         você possa ficar a par das informações da sua empresa!
                     </p>
-                </div>
+                </motion.div>
 
-                <div
-                    className={clsx(
-                        '2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center',
-                        styles.right_appear_animation,
-                    )}
+                <motion.div
+                    className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center"
+                    initial={{ opacity: 0, x: 500 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                        duration: 1,
+                        ease: 'easeInOut',
+                    }}
                 >
                     <Image
                         src={pcMokcupImg}
                         alt="Mockup do Dashboard"
                         priority
                     />
-                </div>
+                </motion.div>
 
                 <div className="absolute bottom-0 w-full h-[150px] black-gradient"></div>
             </section>
