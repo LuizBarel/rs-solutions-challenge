@@ -44,13 +44,33 @@ import brandMinimalImg from '@public/brand/rssolutions-brand-minimal.png';
 
 export function AppSidebar() {
     // Estado da sidebar
-    const { state } = useSidebar();
+    const { setOpenMobile, state } = useSidebar();
 
     // Estado mobile
     const isMobile = useIsMobile();
 
     // Estado do collapse
     const [isCollapse, setIsCollapse] = useState(true);
+
+    // Manipulação do scroll em links âncoras
+    const handleScrollTo = (id: string) => {
+        const element = document.getElementById(id);
+
+        if (element) {
+            const offset = 100;
+            const elementPosition =
+                element.getBoundingClientRect().top + window.scrollY;
+
+            window.scrollTo({
+                top: elementPosition - offset,
+                behavior: 'smooth',
+            });
+
+            if (isMobile) {
+                setOpenMobile(false);
+            }
+        }
+    };
 
     return (
         <Sidebar collapsible="icon" className="border-none z-20">
@@ -146,13 +166,25 @@ export function AppSidebar() {
                                         >
                                             <SidebarMenuSub>
                                                 <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton href="#statistics">
+                                                    <SidebarMenuSubButton
+                                                        onClick={() =>
+                                                            handleScrollTo(
+                                                                'statistics',
+                                                            )
+                                                        }
+                                                    >
                                                         Estatísticas
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
 
                                                 <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton href="#channels">
+                                                    <SidebarMenuSubButton
+                                                        onClick={() =>
+                                                            handleScrollTo(
+                                                                'channels',
+                                                            )
+                                                        }
+                                                    >
                                                         Canais
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
