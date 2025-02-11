@@ -316,6 +316,15 @@ export default function Dashboard() {
                     </ScrollArea>
                 </div>
             </section>
+
+            <section
+                id="rschallenge"
+                className="flex justify-center items-center h-[100px] p-3 bg-white rounded-lg components-shadow"
+            >
+                <h3 className="text-md text-primary-700">
+                    © 2025 RS Solutions Challenge
+                </h3>
+            </section>
         </>
     );
 }
