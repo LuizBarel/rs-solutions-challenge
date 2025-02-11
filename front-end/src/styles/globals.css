@@ -50,6 +50,33 @@
     }
 }
 
+/* Scroll Bar */
+
+body {
+    --sb-track-color: #5f5f62;
+    --sb-thumb-color: #2961cc;
+    --sb-size: 14px;
+}
+
+body::-webkit-scrollbar {
+    width: var(--sb-size);
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+}
+
+body::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border: 2px solid #5f5f62;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    body {
+        scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
+}
+
 /* Página de Login e Registre-se */
 
 .button-shadow {
