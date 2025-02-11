@@ -5,6 +5,7 @@ import { LuBanknote, LuBox } from 'react-icons/lu';
 import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { LiaChartPieSolid, LiaCoinsSolid } from 'react-icons/lia';
 import { BiBarChartAlt2 } from 'react-icons/bi';
+import { MdFormatListBulleted } from 'react-icons/md';
 
 import {
     chartConfigBilling,
@@ -30,6 +31,17 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function Dashboard() {
     return (
@@ -245,6 +257,63 @@ export default function Dashboard() {
                             </PieChart>
                         </ChartContainer>
                     </div>
+                </div>
+
+                <div className="flex flex-col gap-4 p-3 bg-white rounded-lg components-shadow">
+                    <div className="flex items-center gap-1 text-gray-900">
+                        <MdFormatListBulleted size={20} />
+                        <h3 className="text-sm font-medium">
+                            RANKING DE VENDAS POR CANAL
+                        </h3>
+                    </div>
+
+                    <ScrollArea className="max-h-[400px] w-full rounded-t-md px-3 pb-3">
+                        <Table>
+                            <TableHeader className="sticky top-0">
+                                <TableRow header={true}>
+                                    <TableHead>Canal</TableHead>
+                                    <TableHead>Vendas (R$)</TableHead>
+                                    <TableHead className="w-[150px]">
+                                        %
+                                    </TableHead>
+                                    <TableHead>Pedidos</TableHead>
+                                    <TableHead>Ticket Médio</TableHead>
+                                    <TableHead>Qtd de Produtos</TableHead>
+                                </TableRow>
+                            </TableHeader>
+
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>Vitrine Totem</TableCell>
+                                    <TableCell>10.540.500,00</TableCell>
+                                    <TableCell>60%</TableCell>
+                                    <TableCell>67,982</TableCell>
+                                    <TableCell>42,89%</TableCell>
+                                    <TableCell>167,892</TableCell>
+                                </TableRow>
+
+                                <TableRow subrow={true}>
+                                    <TableCell icon={true}>Salão</TableCell>
+                                    <TableCell>7.540.500,00</TableCell>
+                                    <TableCell>40%</TableCell>
+                                    <TableCell>57,982</TableCell>
+                                    <TableCell>30,89%</TableCell>
+                                    <TableCell>127,892</TableCell>
+                                </TableRow>
+
+                                <TableRow subrow={true}>
+                                    <TableCell icon={true}>
+                                        Drive Thru
+                                    </TableCell>
+                                    <TableCell>3.000.000,00</TableCell>
+                                    <TableCell>20%</TableCell>
+                                    <TableCell>10,000</TableCell>
+                                    <TableCell>10%</TableCell>
+                                    <TableCell>50,000</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </ScrollArea>
                 </div>
             </section>
         </>
