@@ -3,17 +3,16 @@
 
 import { useState } from 'react';
 
-import styles from './register.module.css';
-import clsx from 'clsx';
+import { motion } from 'motion/react';
 
 import Link from 'next/link';
 import Image from 'next/image';
 
-import brandImg from '@/public/brand/rssolutions-brand.png';
-import pcMokcupImg from '@/public/login/pc-dashboard-mockup.png';
+import brandImg from '@public/brand/rssolutions-brand.png';
+import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
-import { Input } from '@/src/components/ui/input';
-import { Button } from '@/src/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export default function Register() {
@@ -32,11 +31,14 @@ export default function Register() {
                 </div>
 
                 <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16">
-                    <div
-                        className={clsx(
-                            'flex flex-col gap-4',
-                            styles.top_text_appear,
-                        )}
+                    <motion.div
+                        className="flex flex-col gap-4"
+                        initial={{ y: 85 }}
+                        animate={{ y: 0 }}
+                        transition={{
+                            duration: 1,
+                            ease: 'easeInOut',
+                        }}
                     >
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
                             Sign Up
@@ -45,16 +47,26 @@ export default function Register() {
                             Registre-se para acessar o Seru Dashboard e
                             acompanhar seus negócios de um jeito simples!
                         </p>
-                    </div>
+                    </motion.div>
 
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col gap-4">
-                            <Input
-                                type="text"
-                                placeholder="Nome de Usuário"
-                                className={styles.top_input_appear}
-                            />
+                            <motion.div
+                                initial={{ opacity: 0, y: 90 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                    duration: 1,
+                                    ease: 'easeInOut',
+                                }}
+                            >
+                                <Input
+                                    type="text"
+                                    placeholder="Nome de Usuário"
+                                />
+                            </motion.div>
+
                             <Input type="email" placeholder="E-mail" />
+
                             <div className="relative">
                                 <Input
                                     type={
@@ -75,11 +87,15 @@ export default function Register() {
                                     )}
                                 </div>
                             </div>
-                            <div
-                                className={clsx(
-                                    'relative',
-                                    styles.bottom_input_appear,
-                                )}
+
+                            <motion.div
+                                className="relative"
+                                initial={{ opacity: 0, y: -90 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                    duration: 1,
+                                    ease: 'easeInOut',
+                                }}
                             >
                                 <Input
                                     type={
@@ -89,6 +105,7 @@ export default function Register() {
                                     }
                                     placeholder="Confirme a sua senha"
                                 />
+
                                 <div
                                     className="text-gray-500 absolute top-4 right-4 cursor-pointer transition hover:text-gray-600"
                                     onClick={() =>
@@ -103,15 +120,21 @@ export default function Register() {
                                         <IoMdEyeOff size={24} />
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
 
-                        <Button
-                            variant="default"
-                            className={styles.bottom_button_appear}
+                        <motion.div
+                            initial={{ y: -75 }}
+                            animate={{ y: 0 }}
+                            transition={{
+                                duration: 1,
+                                ease: 'easeInOut',
+                            }}
                         >
-                            Registrar-se
-                        </Button>
+                            <Button className="w-full" variant="default">
+                                Registrar-se
+                            </Button>
+                        </motion.div>
                     </div>
                 </div>
 
