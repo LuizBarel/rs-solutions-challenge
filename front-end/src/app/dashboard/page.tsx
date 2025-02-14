@@ -41,8 +41,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
-
 import { motion } from 'motion/react';
 
 import { useInView } from 'react-intersection-observer';
