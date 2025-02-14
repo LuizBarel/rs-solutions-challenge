@@ -40,18 +40,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         ? isScrolled
                             ? 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10'
                             : 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8'
-                        : 'w-full h-[100px] fixed flex md:justify-end justify-between bg-white p-8 border-b border-b-gray-600 z-10',
+                        : 'w-full sm:h-[100px] h-[70px] fixed flex md:justify-end justify-between items-center bg-white md:p-8 p-3 border-b border-b-gray-600 z-10',
                 )}
             >
                 <SidebarTrigger className="flex md:hidden" />
 
                 <div className="flex items-center gap-[2px] select-none">
-                    <HiOutlineUserCircle size={32} />
-                    <p className="text-md text-gray-900">Usuário</p>
+                    <HiOutlineUserCircle size={!isMobile ? 32 : 28} />
+                    <p className="md:text-md text-sm text-gray-900">Usuário</p>
                 </div>
             </header>
 
-            <main className="flex flex-col gap-12 w-full mt-[100px] p-8 bg-gray-50 md:border-t md:border-l md:border-gray-600 md:rounded-tl-lg">
+            <main className="flex flex-col lg:gap-12 gap-8 w-full sm:mt-[100px] mt-[70px] lg:p-8 md:p-6 p-3 bg-gray-50 md:border-t md:border-l md:border-gray-600 md:rounded-tl-lg">
                 {children}
             </main>
         </SidebarProvider>

@@ -188,12 +188,6 @@ export function AppSidebar() {
                                                         Canais
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
-
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton href="#">
-                                                        Empresas
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
                                             </SidebarMenuSub>
                                         </motion.div>
                                     </CollapsibleContent>

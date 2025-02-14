@@ -6,6 +6,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { Menu, PanelLeftOpen, PanelRightOpen } from 'lucide-react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsLaptop } from '@/hooks/use-laptop';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -68,6 +69,7 @@ const SidebarProvider = React.forwardRef<
         ref,
     ) => {
         const isMobile = useIsMobile();
+        const isLaptop = useIsLaptop();
         const [openMobile, setOpenMobile] = React.useState(false);
 
         // This is the internal state of the sidebar.
@@ -144,7 +146,9 @@ const SidebarProvider = React.forwardRef<
                     <div
                         style={
                             {
-                                '--sidebar-width': SIDEBAR_WIDTH,
+                                '--sidebar-width': isLaptop
+                                    ? '12rem'
+                                    : SIDEBAR_WIDTH,
                                 '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
                                 ...style,
                             } as React.CSSProperties
