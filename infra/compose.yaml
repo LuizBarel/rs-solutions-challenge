@@ -10,6 +10,8 @@ services:
             - WATCHPACK_POLLING=true
         ports:
             - 3001:3001
+        networks:
+            - rs-network
         volumes:
             - ../back-end/:/back-end
             - /back-end/node_modules
@@ -28,6 +30,8 @@ services:
             - WATCHPACK_POLLING=true
         ports:
             - 3000:3000
+        networks:
+            - rs-network
         volumes:
             - ../front-end/:/front-end
             - /front-end/node_modules
@@ -41,6 +45,8 @@ services:
             - ../.env
         ports:
             - 5432:5432
+        networks:
+            - rs-network
         volumes:
             - postgres-db_data:/var/lib/postgresql/data
             - ./scripts/create.sql:/docker-entrypoint-initdb.d/init.sql
@@ -51,8 +57,14 @@ services:
             - ../.env
         ports:
             - 8080:80
+        networks:
+            - rs-network
         volumes:
             - pgadmin_data:/var/lib/pgadmin
+
+networks:
+    rs-network:
+        driver: bridge
 
 volumes:
     pgadmin_data:

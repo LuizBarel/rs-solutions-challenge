@@ -1,10 +1,17 @@
-FROM node:22.13.1-alpine
+FROM node:22.13.1 AS builder
 
 WORKDIR /back-end
 COPY ../back-end/package*.json ./
-RUN npm install
+RUN npm install --only=production
 COPY ../back-end .
 RUN npm run build
 EXPOSE 3001
 
-CMD ["node", "dist/main"]
+FROM node:22.13.1-alpine AS runner
+
+WORKDIR /back-end
+COPY --from=builder /back-end/dist ./dist
+COPY --from=builder /back-end/node_modules ./node_modules
+COPY package.json ./
+
+CMD ["node", "dist/main.js"]
