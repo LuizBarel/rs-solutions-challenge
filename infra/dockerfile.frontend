@@ -1,9 +1,19 @@
-FROM node:22.13.1-alpine
+FROM node:22.13.1-alpine AS builder
 
 WORKDIR /front-end
 COPY ../front-end/package.json ../front-end/package-lock.json ./
-RUN npm ci
+RUN npm install --only=production
 COPY ../front-end .
+RUN npm run build
 EXPOSE 3000
+
+FROM node:22.13.1-alpine AS runner
+
+WORKDIR /front-end
+COPY --from=builder /front-end/package.json ./
+COPY --from=builder /front-end/next.config.ts ./
+COPY --from=builder /front-end/.next ./.next
+COPY --from=builder /front-end/public ./public
+COPY --from=builder /front-end/node_modules ./node_modules
 
 CMD [ "npm", "run", "dev" ]
