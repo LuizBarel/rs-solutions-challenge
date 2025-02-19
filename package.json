@@ -20,6 +20,7 @@
         "commit": "cz",
         "services:wait:database": "node infra/scripts/wait-for-database.js",
         "docker:up": "docker compose -f infra/compose.yaml up -d",
+        "docker:up:database": "docker compose -f infra/compose.yaml up database pgadmin -d",
         "docker:start": "docker compose -f infra/compose.yaml start",
         "docker:stop": "docker compose -f infra/compose.yaml stop",
         "docker:down": "docker compose -f infra/compose.yaml down",
