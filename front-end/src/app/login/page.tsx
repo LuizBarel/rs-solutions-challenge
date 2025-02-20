@@ -3,7 +3,10 @@
 
 import { useState } from 'react';
 
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
+import { cn } from '@/lib/utils';
+
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,6 +20,8 @@ import { Button } from '@/components/ui/button';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export default function Login() {
+    const isMobile = useIsMobile();
+
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
     const [passwordVisibility, setPasswordVisibility] = useState(true);
 
@@ -39,26 +44,40 @@ export default function Login() {
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
-                <motion.div
-                    className="2xl:w-3/4 w-11/12"
-                    initial={{ opacity: 0, y: -110 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/4 w-11/12',
+                        isMobile ? '!opacity-100 !translate-y-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, y: -110 } : undefined}
+                    animate={!isMobile ? { opacity: 1, y: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <Image src={brandImg} alt="Logo" width={130} />
-                </motion.div>
+                </m.div>
 
-                <motion.div
-                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16"
-                    initial={{ opacity: 0, x: -200 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16',
+                        isMobile ? '!opacity-100 !translate-x-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, x: -200 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <div className="flex flex-col gap-4">
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
@@ -109,16 +128,23 @@ export default function Login() {
 
                         <Button variant="default">Entrar</Button>
                     </form>
-                </motion.div>
+                </m.div>
 
-                <motion.div
-                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12"
-                    initial={{ opacity: 0, y: 110 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12',
+                        isMobile ? '!opacity-100 !translate-y-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, y: 110 } : undefined}
+                    animate={!isMobile ? { opacity: 1, y: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <p className="text-gray-600 lg:text-md text-sm">
                         Não possui uma conta?
@@ -129,18 +155,22 @@ export default function Login() {
                             Registre-se
                         </Link>
                     </p>
-                </motion.div>
+                </m.div>
             </section>
 
             <section className="gradient-background relative hidden md:flex flex-col justify-center items-center text-center 2xl:gap-14 md:gap-7">
-                <motion.div
+                <m.div
                     className="2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7"
-                    initial={{ opacity: 0, x: 500 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                    initial={!isMobile ? { opacity: 0, x: 500 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <h1 className="2xl:text-6xl lg:text-5xl md:text-4xl font-semibold text-primary-100">
                         Seru Dasboard
@@ -149,23 +179,27 @@ export default function Login() {
                         Um sistema que oferece um dashboard completo para que
                         você possa ficar a par das informações da sua empresa!
                     </p>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center"
-                    initial={{ opacity: 0, x: 500 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                    initial={!isMobile ? { opacity: 0, x: 500 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <Image
                         src={pcMokcupImg}
                         alt="Mockup do Dashboard"
                         priority
                     />
-                </motion.div>
+                </m.div>
 
                 <div className="absolute bottom-0 w-full h-[150px] black-gradient"></div>
             </section>
