@@ -49,7 +49,6 @@ services:
             - rs-network
         volumes:
             - postgres-db_data:/var/lib/postgresql/data
-            - ./scripts/create.sql:/docker-entrypoint-initdb.d/init.sql
     pgadmin:
         container_name: pgadmin
         image: dpage/pgadmin4
