@@ -15,6 +15,7 @@ import brandImg from '@public/brand/rssolutions-brand.png';
 import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
 import FormInput from '@/components/form/formInput';
+import Spinner from '@/components/feedback/spinner';
 import { Button } from '@/components/ui/button';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
@@ -45,13 +46,22 @@ export default function Login() {
         e.preventDefault();
     };
 
+    // Estado do carregamento do login
+    const [isLoading, setIsLoading] = useState(false);
+
     // Função para logar o usuário se todos os campos forem preenchidos corretamente
     const handleLogin = async () => {
         if (!inputsValue.email || !inputsValue.password) {
             return;
         }
 
-        await authUser(inputsValue.email, inputsValue.password, login);
+        setIsLoading(true);
+
+        try {
+            await authUser(inputsValue.email, inputsValue.password, login);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -145,7 +155,7 @@ export default function Login() {
                         </div>
 
                         <Button variant="default" onClick={handleLogin}>
-                            Entrar
+                            {isLoading ? <Spinner /> : 'Entrar'}
                         </Button>
                     </form>
                 </m.div>

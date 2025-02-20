@@ -16,6 +16,7 @@ import brandImg from '@public/brand/rssolutions-brand.png';
 import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
 import FormInput from '@/components/form/formInput';
+import Spinner from '@/components/feedback/spinner';
 import { Button } from '@/components/ui/button';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
@@ -51,6 +52,9 @@ export default function Register() {
         e.preventDefault();
     };
 
+    // Estado do carregamento do register
+    const [isLoading, setIsLoading] = useState(false);
+
     // Função para criar o usuário se todos os campos forem preenchidos corretamente
     const handleRegister = async () => {
         if (
@@ -66,6 +70,8 @@ export default function Register() {
             return;
         }
 
+        setIsLoading(true);
+
         const response = await createUser(
             inputsValue.name,
             inputsValue.email,
@@ -73,6 +79,7 @@ export default function Register() {
         );
 
         if (response) {
+            setIsLoading(false);
             router.push('/login');
         }
     };
@@ -253,7 +260,7 @@ export default function Register() {
                                 variant="default"
                                 onClick={handleRegister}
                             >
-                                Registrar-se
+                                {isLoading ? <Spinner /> : 'Registrar-se'}
                             </Button>
                         </m.div>
                     </form>
