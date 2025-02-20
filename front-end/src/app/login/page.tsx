@@ -11,13 +11,30 @@ import Image from 'next/image';
 import brandImg from '@public/brand/rssolutions-brand.png';
 import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
-import { Input } from '@/components/ui/input';
+import FormInput from '@/components/form/formInput';
 import { Button } from '@/components/ui/button';
+
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export default function Login() {
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
     const [passwordVisibility, setPasswordVisibility] = useState(true);
+
+    // Estado para armazenar o valor dos inputs
+    const [inputsValue, setInputsValue] = useState({
+        email: '',
+        password: '',
+    });
+
+    // Função para chamar o estado que armazena o valor dos inputs
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputsValue({ ...inputsValue, [e.target.name]: e.target.value });
+    };
+
+    // Função para prevenir o carregamento da página ao clicar no botão de login
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+    };
 
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
@@ -53,15 +70,27 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-8">
+                    <form
+                        className="flex flex-col gap-8"
+                        onSubmit={handleSubmit}
+                    >
                         <div className="flex flex-col gap-4">
-                            <Input type="email" placeholder="E-mail" />
+                            <FormInput
+                                name="email"
+                                type="email"
+                                placeholder="E-mail"
+                                onChange={onChange}
+                                errorMessage="O e-mail inserido é inválido"
+                            />
                             <div className="relative">
-                                <Input
+                                <FormInput
+                                    name="password"
                                     type={
                                         passwordVisibility ? 'password' : 'text'
                                     }
                                     placeholder="Senha"
+                                    onChange={onChange}
+                                    errorMessage="Preencha este campo"
                                 />
                                 <div
                                     className="text-gray-500 absolute top-4 right-4 cursor-pointer transition hover:text-gray-600"
@@ -79,7 +108,7 @@ export default function Login() {
                         </div>
 
                         <Button variant="default">Entrar</Button>
-                    </div>
+                    </form>
                 </motion.div>
 
                 <motion.div

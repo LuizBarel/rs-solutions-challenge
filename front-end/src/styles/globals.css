@@ -99,6 +99,14 @@ body::-webkit-scrollbar-thumb {
     );
 }
 
+input:invalid[data-focused='true'] {
+    @apply border-red-500;
+}
+
+input:invalid[data-focused='true'] ~ span {
+    display: block;
+}
+
 /* Página de Dashboard */
 
 .sidebar-trigger-shadow {
