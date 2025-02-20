@@ -19,7 +19,11 @@ import { Button } from '@/components/ui/button';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
+import { authUser } from './login-functions';
+import { useAuth } from '@/contexts/authContext';
+
 export default function Login() {
+    const { login } = useAuth();
     const isMobile = useIsMobile();
 
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
@@ -41,6 +45,15 @@ export default function Login() {
         e.preventDefault();
     };
 
+    // Função para logar o usuário se todos os campos forem preenchidos corretamente
+    const handleLogin = async () => {
+        if (!inputsValue.email || !inputsValue.password) {
+            return;
+        }
+
+        await authUser(inputsValue.email, inputsValue.password, login);
+    };
+
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
@@ -60,7 +73,12 @@ export default function Login() {
                             : undefined
                     }
                 >
-                    <Image src={brandImg} alt="Logo" width={130} />
+                    <Image
+                        src={brandImg}
+                        alt="Logo"
+                        width={130}
+                        placeholder="blur"
+                    />
                 </m.div>
 
                 <m.div
@@ -126,7 +144,9 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <Button variant="default">Entrar</Button>
+                        <Button variant="default" onClick={handleLogin}>
+                            Entrar
+                        </Button>
                     </form>
                 </m.div>
 

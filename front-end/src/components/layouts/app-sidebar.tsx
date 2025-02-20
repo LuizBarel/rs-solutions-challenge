@@ -42,6 +42,8 @@ import Link from 'next/link';
 import brandImg from '@public/brand/rssolutions-brand.png';
 import brandMinimalImg from '@public/brand/rssolutions-brand-minimal.png';
 
+import { useAuth } from '@/contexts/authContext';
+
 export function AppSidebar() {
     // Estado da sidebar
     const { setOpenMobile, state } = useSidebar();
@@ -71,6 +73,9 @@ export function AppSidebar() {
             }
         }
     };
+
+    // Função de logout
+    const { logout } = useAuth();
 
     return (
         <Sidebar collapsible="icon" className="border-none z-20">
@@ -250,7 +255,9 @@ export function AppSidebar() {
                             <SidebarMenuItem>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <SidebarMenuButton>
+                                        <SidebarMenuButton
+                                            onClick={() => logout()}
+                                        >
                                             <LuLogOut size={20} />
                                             Sair
                                         </SidebarMenuButton>

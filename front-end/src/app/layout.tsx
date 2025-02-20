@@ -13,11 +13,15 @@ const open_sans = Open_Sans({
     subsets: ['latin'],
 });
 
+import { AuthProvider } from '@/contexts/authContext';
+
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="pt-BR" className={open_sans.className}>
             <body>
-                <LazyMotion features={domAnimation}>{children}</LazyMotion>
+                <AuthProvider>
+                    <LazyMotion features={domAnimation}>{children}</LazyMotion>
+                </AuthProvider>
             </body>
         </html>
     );
