@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { m } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -19,7 +20,10 @@ import { Button } from '@/components/ui/button';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
+import { createUser } from './register-functions';
+
 export default function Register() {
+    const router = useRouter();
     const isMobile = useIsMobile();
 
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
@@ -45,6 +49,32 @@ export default function Register() {
     // Função para prevenir o carregamento da página ao clicar no botão de registrar-se
     const handleSubmit = (e: any) => {
         e.preventDefault();
+    };
+
+    // Função para criar o usuário se todos os campos forem preenchidos corretamente
+    const handleRegister = async () => {
+        if (
+            !inputsValue.name ||
+            !inputsValue.email ||
+            !inputsValue.password ||
+            !inputsValue.confirmPassword
+        ) {
+            return;
+        }
+
+        if (inputsValue.password !== inputsValue.confirmPassword) {
+            return;
+        }
+
+        const response = await createUser(
+            inputsValue.name,
+            inputsValue.email,
+            inputsValue.password,
+        );
+
+        if (response) {
+            router.push('/login');
+        }
     };
 
     return (
@@ -218,7 +248,11 @@ export default function Register() {
                                     : undefined
                             }
                         >
-                            <Button className="w-full" variant="default">
+                            <Button
+                                className="w-full"
+                                variant="default"
+                                onClick={handleRegister}
+                            >
                                 Registrar-se
                             </Button>
                         </m.div>
