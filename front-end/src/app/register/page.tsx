@@ -48,7 +48,7 @@ export default function Register() {
     };
 
     // Função para prevenir o carregamento da página ao clicar no botão de registrar-se
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     };
 

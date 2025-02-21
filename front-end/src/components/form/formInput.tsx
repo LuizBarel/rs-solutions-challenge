@@ -2,16 +2,28 @@ import { useState } from 'react';
 
 import { Input } from '@/components/ui/input';
 
-export default function FormInput(props: any) {
+// Definindo o tipo das props
+interface FormInputProps {
+    errorMessage: string;
+    name: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    pattern?: string;
+    placeholder?: string;
+    type: string;
+}
+
+export default function FormInput(props: FormInputProps) {
     // Passagem das props
     const { errorMessage, name, onChange, pattern, placeholder, type } = props;
 
     const [focused, setFocused] = useState(false);
 
     // Aplica true ao estado de setFocused quando ocorrer o onBlur, ou se houver foco no campo de confirmação de senha
-    const handleFocus = (e: any) => {
+    /* eslint-disable @typescript-no-unused-vars */
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
         setFocused(true);
     };
+    /* eslint-enable @typescript-no-unused-vars */
 
     return (
         <div>

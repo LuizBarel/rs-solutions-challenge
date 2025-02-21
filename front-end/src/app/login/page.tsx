@@ -43,7 +43,7 @@ export default function Login() {
     };
 
     // Função para prevenir o carregamento da página ao clicar no botão de login
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     };
 
