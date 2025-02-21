@@ -3,7 +3,7 @@ import api from '@/lib/api';
 export const authUser = async (
     email: string,
     password: string,
-    login: Function,
+    login: (token: string) => void,
 ) => {
     try {
         const response = await api.post('/auth/signin', {

@@ -19,11 +19,9 @@ export default function FormInput(props: FormInputProps) {
     const [focused, setFocused] = useState(false);
 
     // Aplica true ao estado de setFocused quando ocorrer o onBlur, ou se houver foco no campo de confirmação de senha
-    /* eslint-disable @typescript-no-unused-vars */
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const handleFocus = () => {
         setFocused(true);
     };
-    /* eslint-enable @typescript-no-unused-vars */
 
     return (
         <div>
