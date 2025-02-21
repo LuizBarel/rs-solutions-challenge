@@ -2,8 +2,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
+import { cn } from '@/lib/utils';
+
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,11 +15,18 @@ import Image from 'next/image';
 import brandImg from '@public/brand/rssolutions-brand.png';
 import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
-import { Input } from '@/components/ui/input';
+import FormInput from '@/components/form/formInput';
+import Spinner from '@/components/feedback/spinner';
 import { Button } from '@/components/ui/button';
+
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
+import { createUser } from './register-functions';
+
 export default function Register() {
+    const router = useRouter();
+    const isMobile = useIsMobile();
+
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
     const [passwordVisibility, setPasswordVisibility] = useState(true);
 
@@ -23,22 +34,81 @@ export default function Register() {
     const [confirmPasswordVisibility, setConfirmPasswordVisibility] =
         useState(true);
 
+    // Estado para armazenar o valor dos inputs
+    const [inputsValue, setInputsValue] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    // Função para chamar o estado que armazena o valor dos inputs
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputsValue({ ...inputsValue, [e.target.name]: e.target.value });
+    };
+
+    // Função para prevenir o carregamento da página ao clicar no botão de registrar-se
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
+
+    // Estado do carregamento do register
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Função para criar o usuário se todos os campos forem preenchidos corretamente
+    const handleRegister = async () => {
+        if (
+            !inputsValue.name ||
+            !inputsValue.email ||
+            !inputsValue.password ||
+            !inputsValue.confirmPassword
+        ) {
+            return;
+        }
+
+        if (inputsValue.password !== inputsValue.confirmPassword) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        const response = await createUser(
+            inputsValue.name,
+            inputsValue.email,
+            inputsValue.password,
+        );
+
+        if (response) {
+            localStorage.setItem('registerMessage', response);
+
+            setIsLoading(false);
+            router.push('/login');
+        }
+    };
+
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
-            <section className="flex flex-col justify-between items-center py-12">
+            <section className="flex flex-col justify-between items-center py-6">
                 <div className="2xl:w-3/4 w-11/12">
                     <Image src={brandImg} alt="Logo" width={130} />
                 </div>
 
                 <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16">
-                    <motion.div
-                        className="flex flex-col gap-4"
-                        initial={{ y: 85 }}
-                        animate={{ y: 0 }}
-                        transition={{
-                            duration: 1,
-                            ease: 'easeInOut',
-                        }}
+                    <m.div
+                        className={cn(
+                            'flex flex-col gap-4',
+                            isMobile ? '!translate-y-0' : '',
+                        )}
+                        initial={!isMobile ? { y: 85 } : undefined}
+                        animate={!isMobile ? { y: 0 } : undefined}
+                        transition={
+                            !isMobile
+                                ? {
+                                      duration: 1,
+                                      ease: 'easeInOut',
+                                  }
+                                : undefined
+                        }
                     >
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
                             Sign Up
@@ -47,32 +117,64 @@ export default function Register() {
                             Registre-se para acessar o Seru Dashboard e
                             acompanhar seus negócios de um jeito simples!
                         </p>
-                    </motion.div>
+                    </m.div>
 
-                    <div className="flex flex-col gap-8">
+                    <form
+                        className="flex flex-col gap-8"
+                        onSubmit={handleSubmit}
+                    >
                         <div className="flex flex-col gap-4">
-                            <motion.div
-                                initial={{ opacity: 0, y: 90 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 1,
-                                    ease: 'easeInOut',
-                                }}
+                            <m.div
+                                className={
+                                    isMobile
+                                        ? '!opacity-100 !translate-y-0'
+                                        : ''
+                                }
+                                initial={
+                                    !isMobile
+                                        ? { opacity: 0, y: 90 }
+                                        : undefined
+                                }
+                                animate={
+                                    !isMobile ? { opacity: 1, y: 0 } : undefined
+                                }
+                                transition={
+                                    !isMobile
+                                        ? {
+                                              duration: 1,
+                                              ease: 'easeInOut',
+                                          }
+                                        : undefined
+                                }
                             >
-                                <Input
+                                <FormInput
+                                    name="name"
                                     type="text"
                                     placeholder="Nome de Usuário"
+                                    pattern="^[A-Za-z0-9]{3,16}$"
+                                    onChange={onChange}
+                                    errorMessage="O nome de usuário deve ter entre 3 e 16 caracteres e nenhum caractere especial"
                                 />
-                            </motion.div>
+                            </m.div>
 
-                            <Input type="email" placeholder="E-mail" />
+                            <FormInput
+                                name="email"
+                                type="email"
+                                placeholder="E-mail"
+                                onChange={onChange}
+                                errorMessage="O e-mail inserido é inválido"
+                            />
 
                             <div className="relative">
-                                <Input
+                                <FormInput
+                                    name="password"
                                     type={
                                         passwordVisibility ? 'password' : 'text'
                                     }
                                     placeholder="Senha"
+                                    pattern="^[A-Za-z0-9!@#$%^&*]{8,}$"
+                                    onChange={onChange}
+                                    errorMessage="A senha deve ter no mínimo 8 caracteres"
                                 />
                                 <div
                                     className="text-gray-500 absolute top-4 right-4 cursor-pointer transition hover:text-gray-600"
@@ -88,22 +190,41 @@ export default function Register() {
                                 </div>
                             </div>
 
-                            <motion.div
-                                className="relative"
-                                initial={{ opacity: 0, y: -90 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 1,
-                                    ease: 'easeInOut',
-                                }}
+                            <m.div
+                                className={cn(
+                                    'relative',
+                                    isMobile
+                                        ? '!opacity-100 !translate-y-0'
+                                        : '',
+                                )}
+                                initial={
+                                    !isMobile
+                                        ? { opacity: 0, y: -90 }
+                                        : undefined
+                                }
+                                animate={
+                                    !isMobile ? { opacity: 1, y: 0 } : undefined
+                                }
+                                transition={
+                                    !isMobile
+                                        ? {
+                                              duration: 1,
+                                              ease: 'easeInOut',
+                                          }
+                                        : undefined
+                                }
                             >
-                                <Input
+                                <FormInput
+                                    name="confirmPassword"
                                     type={
                                         confirmPasswordVisibility
                                             ? 'password'
                                             : 'text'
                                     }
                                     placeholder="Confirme a sua senha"
+                                    pattern={inputsValue.password}
+                                    onChange={onChange}
+                                    errorMessage="As senhas digitadas são diferentes"
                                 />
 
                                 <div
@@ -120,22 +241,31 @@ export default function Register() {
                                         <IoMdEyeOff size={24} />
                                     )}
                                 </div>
-                            </motion.div>
+                            </m.div>
                         </div>
 
-                        <motion.div
-                            initial={{ y: -75 }}
-                            animate={{ y: 0 }}
-                            transition={{
-                                duration: 1,
-                                ease: 'easeInOut',
-                            }}
+                        <m.div
+                            className={isMobile ? '!translate-y-0' : ''}
+                            initial={!isMobile ? { y: -75 } : undefined}
+                            animate={!isMobile ? { y: 0 } : undefined}
+                            transition={
+                                !isMobile
+                                    ? {
+                                          duration: 1,
+                                          ease: 'easeInOut',
+                                      }
+                                    : undefined
+                            }
                         >
-                            <Button className="w-full" variant="default">
-                                Registrar-se
+                            <Button
+                                className="w-full"
+                                variant="default"
+                                onClick={handleRegister}
+                            >
+                                {isLoading ? <Spinner /> : 'Registrar-se'}
                             </Button>
-                        </motion.div>
-                    </div>
+                        </m.div>
+                    </form>
                 </div>
 
                 <div className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12">

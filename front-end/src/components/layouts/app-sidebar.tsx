@@ -28,7 +28,7 @@ import {
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -41,6 +41,8 @@ import Link from 'next/link';
 
 import brandImg from '@public/brand/rssolutions-brand.png';
 import brandMinimalImg from '@public/brand/rssolutions-brand-minimal.png';
+
+import { useAuth } from '@/contexts/authContext';
 
 export function AppSidebar() {
     // Estado da sidebar
@@ -72,6 +74,9 @@ export function AppSidebar() {
         }
     };
 
+    // Função de logout
+    const { logout } = useAuth();
+
     return (
         <Sidebar collapsible="icon" className="border-none z-20">
             <SidebarHeader>
@@ -85,7 +90,7 @@ export function AppSidebar() {
                     }
                     alt="Logo"
                     width={!isMobile ? (state === 'expanded' ? 130 : 40) : 130}
-                    priority={false}
+                    loading="eager"
                 />
             </SidebarHeader>
 
@@ -115,15 +120,27 @@ export function AppSidebar() {
                             >
                                 <SidebarMenuItem>
                                     {isCollapse ? (
-                                        <motion.div
+                                        <m.div
                                             className="left-indicator hidden group-data-[state=open]/collapsible:block"
-                                            initial={{ opacity: 0, x: -30 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{
-                                                duration: 0.3,
-                                                ease: 'easeInOut',
-                                            }}
-                                        ></motion.div>
+                                            initial={
+                                                !isMobile
+                                                    ? { opacity: 0, x: -30 }
+                                                    : undefined
+                                            }
+                                            animate={
+                                                !isMobile
+                                                    ? { opacity: 1, x: 0 }
+                                                    : undefined
+                                            }
+                                            transition={
+                                                !isMobile
+                                                    ? {
+                                                          duration: 0.3,
+                                                          ease: 'easeInOut',
+                                                      }
+                                                    : undefined
+                                            }
+                                        ></m.div>
                                     ) : null}
 
                                     <Link href="/" scroll={false}>
@@ -156,13 +173,25 @@ export function AppSidebar() {
                                     </Link>
 
                                     <CollapsibleContent className="mt-2">
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -100 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{
-                                                duration: 0.3,
-                                                ease: 'easeInOut',
-                                            }}
+                                        <m.div
+                                            initial={
+                                                !isMobile
+                                                    ? { opacity: 0, y: -100 }
+                                                    : undefined
+                                            }
+                                            animate={
+                                                !isMobile
+                                                    ? { opacity: 1, y: 0 }
+                                                    : undefined
+                                            }
+                                            transition={
+                                                !isMobile
+                                                    ? {
+                                                          duration: 0.3,
+                                                          ease: 'easeInOut',
+                                                      }
+                                                    : undefined
+                                            }
                                         >
                                             <SidebarMenuSub>
                                                 <SidebarMenuSubItem>
@@ -189,7 +218,7 @@ export function AppSidebar() {
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
                                             </SidebarMenuSub>
-                                        </motion.div>
+                                        </m.div>
                                     </CollapsibleContent>
                                 </SidebarMenuItem>
                             </Collapsible>
@@ -226,7 +255,9 @@ export function AppSidebar() {
                             <SidebarMenuItem>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <SidebarMenuButton>
+                                        <SidebarMenuButton
+                                            onClick={() => logout()}
+                                        >
                                             <LuLogOut size={20} />
                                             Sair
                                         </SidebarMenuButton>

@@ -1,9 +1,12 @@
 // Definindo o componente para ser renderizado no lado do cliente (client side)
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
+import { cn } from '@/lib/utils';
+
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,37 +14,117 @@ import Image from 'next/image';
 import brandImg from '@public/brand/rssolutions-brand.png';
 import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 
-import { Input } from '@/components/ui/input';
+import FormInput from '@/components/form/formInput';
+import Spinner from '@/components/feedback/spinner';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
+import { authUser } from './login-functions';
+import { useAuth } from '@/contexts/authContext';
+
 export default function Login() {
+    const { login } = useAuth();
+    const isMobile = useIsMobile();
+
     // Estado que a partir dele, altera o ícone do input de senha e o tipo do input de senha
     const [passwordVisibility, setPasswordVisibility] = useState(true);
+
+    // Estado para armazenar o valor dos inputs
+    const [inputsValue, setInputsValue] = useState({
+        email: '',
+        password: '',
+    });
+
+    // Função para chamar o estado que armazena o valor dos inputs
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputsValue({ ...inputsValue, [e.target.name]: e.target.value });
+    };
+
+    // Função para prevenir o carregamento da página ao clicar no botão de login
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
+
+    // Estado do carregamento do login
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Função para logar o usuário se todos os campos forem preenchidos corretamente
+    const handleLogin = async () => {
+        if (!inputsValue.email || !inputsValue.password) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            await authUser(inputsValue.email, inputsValue.password, login);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Estado para armazenar a mensagem vinda do localStorage após o registro de um usuário
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const registerMessage = localStorage.getItem('registerMessage');
+
+        if (registerMessage) {
+            setMessage(registerMessage);
+            localStorage.removeItem('registerMessage');
+        }
+    }, []);
+
+    useEffect(() => {
+        if (message) {
+            toast.success(message);
+        }
+    }, [message]);
 
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
             <section className="flex flex-col justify-between items-center py-12">
-                <motion.div
-                    className="2xl:w-3/4 w-11/12"
-                    initial={{ opacity: 0, y: -110 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/4 w-11/12',
+                        isMobile ? '!opacity-100 !translate-y-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, y: -110 } : undefined}
+                    animate={!isMobile ? { opacity: 1, y: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
-                    <Image src={brandImg} alt="Logo" width={130} />
-                </motion.div>
+                    <Image
+                        src={brandImg}
+                        alt="Logo"
+                        width={130}
+                        placeholder="blur"
+                    />
+                </m.div>
 
-                <motion.div
-                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16"
-                    initial={{ opacity: 0, x: -200 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12 flex flex-col justify-center gap-8 pb-16',
+                        isMobile ? '!opacity-100 !translate-x-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, x: -200 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <div className="flex flex-col gap-4">
                         <h1 className="text-gray-900 lg:text-4xl text-3xl font-semibold">
@@ -53,15 +136,27 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-8">
+                    <form
+                        className="flex flex-col gap-8"
+                        onSubmit={handleSubmit}
+                    >
                         <div className="flex flex-col gap-4">
-                            <Input type="email" placeholder="E-mail" />
+                            <FormInput
+                                name="email"
+                                type="email"
+                                placeholder="E-mail"
+                                onChange={onChange}
+                                errorMessage="O e-mail inserido é inválido"
+                            />
                             <div className="relative">
-                                <Input
+                                <FormInput
+                                    name="password"
                                     type={
                                         passwordVisibility ? 'password' : 'text'
                                     }
                                     placeholder="Senha"
+                                    onChange={onChange}
+                                    errorMessage="Preencha este campo"
                                 />
                                 <div
                                     className="text-gray-500 absolute top-4 right-4 cursor-pointer transition hover:text-gray-600"
@@ -78,18 +173,27 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <Button variant="default">Entrar</Button>
-                    </div>
-                </motion.div>
+                        <Button variant="default" onClick={handleLogin}>
+                            {isLoading ? <Spinner /> : 'Entrar'}
+                        </Button>
+                    </form>
+                </m.div>
 
-                <motion.div
-                    className="2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12"
-                    initial={{ opacity: 0, y: 110 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                <m.div
+                    className={cn(
+                        '2xl:w-3/5 lg:w-4/5 md:w-11/12 sm:w-4/5 w-11/12',
+                        isMobile ? '!opacity-100 !translate-y-0' : '',
+                    )}
+                    initial={!isMobile ? { opacity: 0, y: 110 } : undefined}
+                    animate={!isMobile ? { opacity: 1, y: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <p className="text-gray-600 lg:text-md text-sm">
                         Não possui uma conta?
@@ -100,18 +204,22 @@ export default function Login() {
                             Registre-se
                         </Link>
                     </p>
-                </motion.div>
+                </m.div>
             </section>
 
             <section className="gradient-background relative hidden md:flex flex-col justify-center items-center text-center 2xl:gap-14 md:gap-7">
-                <motion.div
+                <m.div
                     className="2xl:w-3/5 lg:w-4/5 md:w-11/12 center-col gap-7"
-                    initial={{ opacity: 0, x: 500 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                    initial={!isMobile ? { opacity: 0, x: 500 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <h1 className="2xl:text-6xl lg:text-5xl md:text-4xl font-semibold text-primary-100">
                         Seru Dasboard
@@ -120,23 +228,27 @@ export default function Login() {
                         Um sistema que oferece um dashboard completo para que
                         você possa ficar a par das informações da sua empresa!
                     </p>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     className="2xl:w-auto xl:w-3/4 lg:w-4/5 md:w-11/12 center"
-                    initial={{ opacity: 0, x: 500 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                        duration: 1,
-                        ease: 'easeInOut',
-                    }}
+                    initial={!isMobile ? { opacity: 0, x: 500 } : undefined}
+                    animate={!isMobile ? { opacity: 1, x: 0 } : undefined}
+                    transition={
+                        !isMobile
+                            ? {
+                                  duration: 1,
+                                  ease: 'easeInOut',
+                              }
+                            : undefined
+                    }
                 >
                     <Image
                         src={pcMokcupImg}
                         alt="Mockup do Dashboard"
                         priority
                     />
-                </motion.div>
+                </m.div>
 
                 <div className="absolute bottom-0 w-full h-[150px] black-gradient"></div>
             </section>
