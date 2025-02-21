@@ -1,7 +1,7 @@
 // Definindo o componente para ser renderizado no lado do cliente (client side)
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { m } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,7 @@ import pcMokcupImg from '@public/login/pc-dashboard-mockup.png';
 import FormInput from '@/components/form/formInput';
 import Spinner from '@/components/feedback/spinner';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
@@ -63,6 +64,24 @@ export default function Login() {
             setIsLoading(false);
         }
     };
+
+    // Estado para armazenar a mensagem vinda do localStorage após o registro de um usuário
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const registerMessage = localStorage.getItem('registerMessage');
+
+        if (registerMessage) {
+            setMessage(registerMessage);
+            localStorage.removeItem('registerMessage');
+        }
+    }, []);
+
+    useEffect(() => {
+        if (message) {
+            toast.success(message);
+        }
+    }, [message]);
 
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">

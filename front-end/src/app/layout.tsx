@@ -14,13 +14,26 @@ const open_sans = Open_Sans({
 });
 
 import { AuthProvider } from '@/contexts/authContext';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="pt-BR" className={open_sans.className}>
             <body>
                 <AuthProvider>
-                    <LazyMotion features={domAnimation}>{children}</LazyMotion>
+                    <LazyMotion features={domAnimation}>
+                        {children}
+                        <Toaster
+                            position="top-right"
+                            toastOptions={{
+                                style: {
+                                    background: '#F4F4F4',
+                                    borderColor: '#767679',
+                                    color: '#15161A',
+                                },
+                            }}
+                        />
+                    </LazyMotion>
                 </AuthProvider>
             </body>
         </html>

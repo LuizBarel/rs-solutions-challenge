@@ -79,6 +79,8 @@ export default function Register() {
         );
 
         if (response) {
+            localStorage.setItem('registerMessage', response);
+
             setIsLoading(false);
             router.push('/login');
         }
