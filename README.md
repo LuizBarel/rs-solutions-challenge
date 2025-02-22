@@ -31,6 +31,62 @@ Esse projeto é um desafio estilo Hackathon proposto pela empresa <a href="https
     <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" /> &nbsp
 </div>
 
+## 🚀 Instalando o projeto
+
+### Pré-requisitos
+
+Antes de iniciar, verifique se você atende aos seguintes requisitos:
+
+- [Node.js](https://nodejs.org/pt) > v22.13.1
+- [Docker](https://www.docker.com/) (necessário apenas para rodar o projeto com o Docker)
+- [PostgreSQL](https://www.postgresql.org/) > 17 (necessário apenas para rodar o projeto localmente)
+
+### Instalação
+
+Clone o projeto:
+
+```
+git clone https://github.com/LuizBarel/rs-solutions-challenge.git
+```
+
+**OBS: Se for usar Docker, configure o `.env` na raiz do projeto conforme sua máquina, alterando usuário, senha ou porta conforme necessário. Se for usar local, configure o `.env` na raiz do back-end nesse caso.**
+
+Na raiz do projeto, abra o terminal e instale as dependências:
+
+```
+npm run install:all
+```
+
+### Inicializando o projeto
+
+#### Com Docker
+
+Crie e inicie os containers docker com o comando:
+
+```
+npm run docker:up
+```
+
+#### Localmente
+
+Na pasta `back-end`, abra um terminal e execute o servidor:
+
+```
+npm run start
+```
+
+Em seguida, na pasta `front-end`, abra um terminal e execute o front-end:
+
+```
+npm run dev
+```
+
+## 🎨 UI/UX
+
+O processo de UI/UX desse projeto foi desenvolvido com a ferramenta `Figma`, utilize o seguinte link para visualizar o projeto:
+
+[Arquivo Figma](https://www.figma.com/design/5hBkIORTjnsMv7russVEBk/RS-Solutions-Challenge---Hackathon?node-id=0-1&t=GdaePGOE4YpmQntp-1)
+
 ## 🤝 Colaboradores
 
 <table>
