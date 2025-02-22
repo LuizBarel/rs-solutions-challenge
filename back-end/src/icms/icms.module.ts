@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([Icms])],
     controllers: [],
     providers: [IcmsService],
+    exports: [IcmsService],
 })
 export class IcmsModule {}

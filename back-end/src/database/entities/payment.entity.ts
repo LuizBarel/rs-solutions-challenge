@@ -4,22 +4,28 @@ import {
     Column,
     ManyToOne,
     JoinColumn,
+    OneToMany,
 } from 'typeorm';
 import { Card } from './card.entity';
+import { Transaction } from './transaction.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class Payments {
     @PrimaryGeneratedColumn()
     idpayments: number;
 
+    @Column({ unique: true })
+    stringPayments: string;
+
     @Column({ length: 45 })
     status_payments: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    total_cashier: number;
+    total_payments: number;
 
     @Column({ length: 45 })
-    method_cashier: string;
+    method_payments: string;
 
     @Column({ type: 'timestamp', precision: 20 })
     createdAt: Date;
@@ -36,4 +42,11 @@ export class Payments {
     @ManyToOne(() => Card)
     @JoinColumn({ name: 'card' })
     card?: Card;
+
+    @OneToMany(() => Transaction, (transaction) => transaction.payment)
+    transactions?: Transaction[];
+
+    @ManyToOne(() => Order)
+    @JoinColumn({ name: 'orderId' })
+    order: Order;
 }

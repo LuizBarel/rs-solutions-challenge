@@ -1,1 +1,36 @@
-export class CreateOrderDto {}
+export class CreateOrderDto {
+    idOrders: number;
+    stringOrder: string;
+    initialUpdateAt: Date;
+    finalUpdatedAt: Date;
+    status: string;
+    type: string;
+    code: string;
+    createdAt: Date;
+    updatedAt: Date;
+    discount: number;
+    serviceCharge: number;
+    subtotal: number;
+    total: number;
+    note?: string;
+    appVersion?: string;
+    consumingMode?: string;
+    responseOrigin?: string;
+    responseOriginJson?: Record<string, any>;
+    salesChannelId: number;
+    companyId: number;
+    itemsId: number;
+    cashiersId: number;
+    paymentsId?: number;
+    customerId: number;
+    taxInvoiceId?: number;
+    deliveryId?: number;
+    tableId?: number;
+    ticketId?: number;
+    createdById?: number;
+    canceledById?: number;
+    cancelAuthorizedById?: number;
+    canceledAt?: Date;
+    additionals?: number;
+    taxInfo?: number;
+}

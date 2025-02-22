@@ -4,11 +4,11 @@ import {
     Column,
     ManyToOne,
     JoinColumn,
+    OneToMany,
 } from 'typeorm';
 import { SalesChannel } from './sales-channel.entity';
 import { Company } from './company.entity';
 import { Item } from './item.entity';
-import { Payments } from './payment.entity';
 import { Customer } from './customer.entity';
 import { Delivery } from './delivery.entity';
 import { Table } from './table.entity';
@@ -24,14 +24,8 @@ export class Order {
     @PrimaryGeneratedColumn()
     idOrders: number;
 
-    @Column({ length: 45 })
+    @Column({ length: 45, unique: true })
     stringOrder: string;
-
-    @Column({ type: 'timestamp', precision: 13 })
-    initialUpdateAt: Date;
-
-    @Column({ type: 'timestamp', precision: 13 })
-    finalUpdatedAt: Date;
 
     @Column({ length: 45 })
     status: string;
@@ -42,7 +36,7 @@ export class Order {
     @Column({ length: 45 })
     code: string;
 
-    @Column({ type: 'timestamp', precision: 15 })
+    @Column({ type: 'timestamp', precision: 15, nullable: true })
     createdAt: Date;
 
     @Column({ type: 'timestamp', precision: 15 })
@@ -69,11 +63,8 @@ export class Order {
     @Column({ length: 20, nullable: true })
     consumingMode?: string;
 
-    @Column({ length: 45, nullable: true })
-    responseOrigin?: string;
-
     @Column({ type: 'json', nullable: true })
-    responseOriginJson?: Record<string, any>; // Nome ajustado para evitar conflito
+    responseOriginJson?: Record<string, any>;
 
     // Relacionamentos ManyToOne
     @ManyToOne(() => SalesChannel, (salesChannel) => salesChannel.orders)
@@ -84,17 +75,12 @@ export class Order {
     @JoinColumn({ name: 'company' })
     company: Company;
 
-    @ManyToOne(() => Item, (item) => item.orders)
-    @JoinColumn({ name: 'items' })
-    items: Item;
+    @OneToMany(() => Item, (item) => item.order, { cascade: true })
+    items: Item[];
 
     @ManyToOne(() => Cashier)
     @JoinColumn({ name: 'cashiers' })
     cashiers: Cashier;
-
-    @ManyToOne(() => Payments, { nullable: true })
-    @JoinColumn({ name: 'payments' })
-    payments?: Payments;
 
     @ManyToOne(() => Customer, (customer) => customer.orders)
     @JoinColumn({ name: 'customer' })
@@ -130,10 +116,4 @@ export class Order {
 
     @Column({ type: 'timestamp', nullable: true })
     canceledAt?: Date;
-
-    @Column({ nullable: true })
-    additionals?: number; // FK para a tabela additionals (ajuste o tipo e relacionamento se necessário)
-
-    @Column({ nullable: true })
-    taxInfo?: number; // FK para a tabela taxInfo (ajuste o tipo e relacionamento se necessário)
 }

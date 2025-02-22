@@ -13,5 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ],
     controllers: [],
     providers: [SalesChannelService],
+    exports: [SalesChannelService],
 })
 export class SalesChannelModule {}

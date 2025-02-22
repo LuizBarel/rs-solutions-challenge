@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/database/entities/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class AuthService {
         const accessToken: string = await this.jwtService.signAsync(payLoad);
         await this.userService.saveToken(user, accessToken);
 
-        return { accessToken };
+        return { accessToken, username: user.name };
     }
     /* eslint-enable @typescript-eslint/no-unsafe-member-access */
 }

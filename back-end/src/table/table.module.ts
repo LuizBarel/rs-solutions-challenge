@@ -7,5 +7,6 @@ import { Table } from 'src/database/entities/table.entity';
     imports: [TypeOrmModule.forFeature([Table])],
     controllers: [],
     providers: [TableService],
+    exports: [TableService],
 })
 export class TableModule {}

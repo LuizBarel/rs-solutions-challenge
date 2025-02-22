@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([CanceledBy])],
     controllers: [],
     providers: [CanceledByService],
+    exports: [CanceledByService],
 })
 export class CanceledByModule {}

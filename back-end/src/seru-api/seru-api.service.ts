@@ -1,5 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import {
+    forwardRef,
+    Inject,
     Injectable,
     InternalServerErrorException,
     Logger,
@@ -10,6 +12,8 @@ import { CredentialsNotFoundException } from 'src/exceptions/credentialsnotfound
 import { AxiosResponse } from 'axios';
 import { ExternalAPIException } from 'src/exceptions/externalapiexception';
 import { getFormattedDates } from './helpers/dateForSearch';
+import { OrdersService } from 'src/orders/orders.service';
+import { CashiersService } from 'src/cashiers/cashiers.service';
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 
@@ -23,7 +27,12 @@ export class SeruApiService {
 
     private readonly logger: Logger = new Logger(SeruApiService.name);
 
-    constructor(private readonly httpService: HttpService) {}
+    constructor(
+        private readonly httpService: HttpService,
+        private orderService: OrdersService,
+        @Inject(forwardRef(() => CashiersService))
+        private cashierService: CashiersService,
+    ) {}
 
     // ! para garantir retorno de dados (testando novas features) = tempo de intervalo de 24 horas
 
@@ -102,7 +111,7 @@ export class SeruApiService {
      * Função para pegar todos os pedidos no intervalo de uma hora
      * @returns Promise<Object> data
      */
-    async getAllOrders(): Promise<Array<object>> {
+    async getAllOrders(): Promise<Array<any>> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
         }
@@ -114,7 +123,8 @@ export class SeruApiService {
             initialUpdatedAt: minusOneHourDateFormatted,
             finalUpdatedAt: currentDateFormatted,
         };
-        const data: Promise<Array<object>> = this.searchInAPI('orders', params);
+
+        const data = await this.searchInAPI('orders', params);
 
         return data;
     }
@@ -135,10 +145,17 @@ export class SeruApiService {
             initialCreatedAt: minusOneHourDateFormatted,
             finalCreatedAt: currentDateFormatted,
         };
-        const data: Promise<Array<object>> = this.searchInAPI(
-            'cashiers',
-            params,
-        );
+        const data = await this.searchInAPI('cashiers', params);
+
+        return data;
+    }
+
+    async getOneCashier(body): Promise<any> {
+        if (this.token == null) {
+            await this.scheduleGenerateToken();
+        }
+
+        const data = await this.searchInAPI(`cashiers/${body.id}`, {});
 
         return data;
     }
@@ -208,6 +225,8 @@ export class SeruApiService {
     async scheduleGetOrders(): Promise<any> {
         const data: Array<any> = await this.getAllOrders();
 
+        await this.orderService.create(data);
+
         this.sendDebugMessage(
             data.length > 1,
             'Pedidos recuperados com sucesso',
@@ -220,6 +239,8 @@ export class SeruApiService {
      */
     async scheduleGetCashiers(): Promise<any> {
         const data: Array<any> = await this.getAllCashiers();
+
+        await this.cashierService.create(data);
 
         this.sendDebugMessage(
             data.length > 1,

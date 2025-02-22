@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([Pis])],
     controllers: [],
     providers: [PisService],
+    exports: [PisService],
 })
 export class PisModule {}

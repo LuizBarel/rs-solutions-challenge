@@ -30,7 +30,7 @@ export class Icms {
     effectiveReductionAliq?: string;
 
     @Column({ length: 45, nullable: true })
-    atPurchaseAliq?: string;
+    stPurchaseAliq?: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     substituteValue?: number;
@@ -50,8 +50,8 @@ export class Icms {
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     fcpValue?: number;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    taxBenefitCode?: number;
+    @Column({ nullable: true })
+    taxBenefitCode?: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     exemptValue?: number;

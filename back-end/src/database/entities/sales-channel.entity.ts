@@ -12,7 +12,7 @@ export class SalesChannel {
     @Column({ length: 45 })
     name_salesChannel: string;
 
-    @Column({ length: 45 })
+    @Column({ length: 45, nullable: true })
     code_salesChannel: string;
 
     @OneToMany(() => Order, (order) => order.salesChannel) // Relacionamento OneToMany

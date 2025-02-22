@@ -23,7 +23,7 @@
         "docker:up:database": "docker compose -f infra/compose.yaml up database pgadmin -d",
         "docker:start": "docker compose -f infra/compose.yaml start",
         "docker:stop": "docker compose -f infra/compose.yaml stop",
-        "docker:down": "docker compose -f infra/compose.yaml down -v",
+        "docker:down": "docker compose -f infra/compose.yaml down",
         "migrations:create": "node-pg-migrate create -m infra/migrations",
         "migrations:up": "node-pg-migrate up -m infra/migrations",
         "test": "cd ./back-end && npm run test",

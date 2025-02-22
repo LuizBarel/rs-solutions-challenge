@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([ClosedBy])],
     controllers: [],
     providers: [ClosedByService],
+    exports: [ClosedByService],
 })
 export class ClosedByModule {}
