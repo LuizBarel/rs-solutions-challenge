@@ -34,7 +34,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 import { HiMiniChevronRight } from 'react-icons/hi2';
 import { LuChartColumn, LuLogOut } from 'react-icons/lu';
-import { FaRegUser } from 'react-icons/fa6';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -231,27 +230,6 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            <SidebarMenuItem>
-                                <Link href="#" scroll={false}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <SidebarMenuButton>
-                                                <FaRegUser size={20} />
-                                                Perfil
-                                            </SidebarMenuButton>
-                                        </TooltipTrigger>
-
-                                        <TooltipContent
-                                            side="right"
-                                            hidden={
-                                                state === 'expanded' || isMobile
-                                            }
-                                        >
-                                            Perfil
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </Link>
-                            </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
