@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { SalesChannel } from './sales-channel.entity';
 import { Company } from './company.entity';
-import { Transaction } from './transaction.entity';
 import { Receipt } from './receipt.entity';
 import { CreatedBy } from './created-by.entity';
 import { BlockedBy } from './blocked-by.entity';
@@ -19,16 +18,16 @@ export class Cashier {
     @PrimaryGeneratedColumn()
     idCashiers: number;
 
-    @Column({ length: 45 })
+    @Column({ length: 45, unique: true })
     stringCashiers: string;
 
-    @Column({ length: 255 })
+    @Column({ length: 255, nullable: true })
     code: string;
 
-    @Column({ length: 45 })
+    @Column({ length: 45, nullable: true })
     status: string;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     createdAt: Date;
 
     @Column({ type: 'timestamp', nullable: true })
@@ -38,19 +37,17 @@ export class Cashier {
     closedAt?: Date;
 
     // Relacionamentos
-    @ManyToOne(() => SalesChannel, (salesChannel) => salesChannel.cashiers)
+    @ManyToOne(() => SalesChannel, (salesChannel) => salesChannel.cashiers, {
+        nullable: true,
+    })
     @JoinColumn({ name: 'salesChannel' })
     salesChannel: SalesChannel;
 
-    @ManyToOne(() => Company)
+    @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: 'company' })
     company: Company;
 
-    @ManyToOne(() => Transaction)
-    @JoinColumn({ name: 'transactions' })
-    transactions: Transaction;
-
-    @ManyToOne(() => Receipt)
+    @ManyToOne(() => Receipt, { nullable: true })
     @JoinColumn({ name: 'receipts' })
     receipts: Receipt;
 

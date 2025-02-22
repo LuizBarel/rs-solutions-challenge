@@ -28,4 +28,7 @@ export class Card {
 
     @Column({ length: 45, nullable: true })
     lastFourDigits?: string;
+
+    @Column({ length: 45, nullable: true })
+    authorizationCode?: string;
 }

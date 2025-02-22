@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { SeruApiService } from './seru-api.service';
+/* eslint-disable */
 
 @Controller('seru-api')
 export class SeruApiController {
@@ -18,6 +19,11 @@ export class SeruApiController {
     @Get('cashiers')
     async getCashiers() {
         return this.seruApiService.getAllCashiers();
+    }
+
+    @Get('cashiers/:id')
+    async getCashiersId(@Param() id) {
+        return this.seruApiService.getOneCashier(id);
     }
 
     @Get('taxInvoices')

@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([TaxInvoice])],
     controllers: [],
     providers: [TaxInvoiceService],
+    exports: [TaxInvoiceService],
 })
 export class TaxInvoiceModule {}

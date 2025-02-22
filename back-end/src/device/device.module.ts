@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([Device])],
     controllers: [],
     providers: [DeviceService],
+    exports: [DeviceService],
 })
 export class DeviceModule {}

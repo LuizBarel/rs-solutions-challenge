@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([BlockedBy])],
     controllers: [],
     providers: [BlockedByService],
+    exports: [BlockedByService],
 })
 export class BlockedByModule {}

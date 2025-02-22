@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     imports: [TypeOrmModule.forFeature([CancelAuthorizedBy])],
     controllers: [],
     providers: [CancelAuthorizedByService],
+    exports: [CancelAuthorizedByService],
 })
 export class CancelAuthorizedByModule {}

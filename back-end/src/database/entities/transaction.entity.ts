@@ -7,16 +7,17 @@ import {
 } from 'typeorm';
 import { CreatedBy } from './created-by.entity';
 import { Payments } from './payment.entity';
+import { Cashier } from './cashier.entity';
 
 @Entity({ name: 'transactions' })
 export class Transaction {
     @PrimaryGeneratedColumn()
     idtransactions: number;
 
-    @Column({ length: 45 })
+    @Column()
     stringTransactions: string;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    @Column({ type: 'decimal', precision: 25, scale: 2 })
     total: number;
 
     @Column({ length: 45 })
@@ -32,14 +33,17 @@ export class Transaction {
     note?: string;
 
     // Relacionamentos
-    @ManyToOne(() => CreatedBy)
+    @ManyToOne(() => Cashier)
+    @JoinColumn({ name: 'cashier' })
+    cashier: Cashier;
+
+    @ManyToOne(() => CreatedBy, { nullable: true })
     @JoinColumn({ name: 'createdBy' })
     createdBy: CreatedBy;
 
-    @ManyToOne(() => Payments, { nullable: true })
+    @ManyToOne(() => Payments, (payment) => payment.transactions, {
+        nullable: true,
+    })
     @JoinColumn({ name: 'payment' })
     payment?: Payments;
-
-    @Column({ length: 45, nullable: true })
-    transactionscol?: string;
 }

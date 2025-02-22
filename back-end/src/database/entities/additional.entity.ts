@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    JoinColumn,
+} from 'typeorm';
+import { Item } from './item.entity';
 
 @Entity({ name: 'additionals' })
 export class Additional {
@@ -22,4 +29,8 @@ export class Additional {
 
     @Column()
     removable: boolean;
+
+    @ManyToOne(() => Item, (item) => item.additionals)
+    @JoinColumn({ name: 'item_id' })
+    item: Item;
 }

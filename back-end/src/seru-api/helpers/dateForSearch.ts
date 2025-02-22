@@ -4,7 +4,7 @@ export function getFormattedDates() {
     const currentDateFormatted: string =
         currentDate.toISOString().split('.')[0] + 'Z';
     const minusOneHourDate: Date = new Date(
-        currentDate.setMinutes(currentDate.getMinutes() - oneHour),
+        currentDate.setMinutes(currentDate.getMinutes() - oneHour * 24),
     );
     const minusOneHourDateFormatted: string =
         minusOneHourDate.toISOString().split('.')[0] + 'Z';

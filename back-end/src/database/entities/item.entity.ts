@@ -13,15 +13,18 @@ import { TaxInfo } from './tax-info.entity';
 import { Additional } from './additional.entity';
 import { Order } from './order.entity';
 
-@Entity('items') // Nome da tabela no banco
+@Entity('items')
 export class Item {
     @PrimaryGeneratedColumn()
     iditems: number;
 
+    @Column()
+    stringItems: string;
+
     @Column({ length: 45 })
     sku_items: string;
 
-    @Column({ length: 45 })
+    @Column({ length: 255 })
     name_items: string;
 
     @Column()
@@ -39,11 +42,21 @@ export class Item {
     @Column({ type: 'decimal', precision: 9, scale: 2 })
     totalPrice_items: number;
 
-    @Column({ type: 'timestamp', precision: 15, name: 'createdBy' }) // Campo DATETIME do banco
+    @Column({
+        type: 'timestamp',
+        precision: 15,
+        name: 'createdAt',
+        nullable: true,
+    })
     createdAt: Date;
 
-    @Column({ length: 15 })
-    updateBy: string;
+    @Column({
+        type: 'timestamp',
+        precision: 15,
+        name: 'updatedAt',
+        nullable: true,
+    })
+    updatedAt: Date;
 
     @Column({ length: 255, nullable: true })
     picture_items?: string;
@@ -64,17 +77,18 @@ export class Item {
     comboType?: string;
 
     // Relacionamentos
-    @ManyToOne(() => Additional, { nullable: true })
-    @JoinColumn({ name: 'additional' })
-    additionals?: Additional;
+    @OneToMany(() => Additional, (additional) => additional.item, {
+        cascade: true,
+    })
+    additionals: Additional[];
 
     @ManyToOne(() => TaxInfo, { nullable: true })
     @JoinColumn({ name: 'taxInfo' })
     taxInfo?: TaxInfo;
 
     @ManyToOne(() => CreatedBy, { nullable: true })
-    @JoinColumn({ name: 'createdByUser' }) // Supondo que há uma FK separada para o usuário
-    createdByUser?: CreatedBy;
+    @JoinColumn({ name: 'createdBy' })
+    createdBy?: CreatedBy;
 
     @ManyToOne(() => CanceledBy, { nullable: true })
     @JoinColumn({ name: 'canceledBy' })
@@ -84,6 +98,17 @@ export class Item {
     @JoinColumn({ name: 'cancelAuthorizedBy' })
     cancelAuthorizedBy?: CancelAuthorizedBy;
 
-    @OneToMany(() => Order, (order) => order.items)
-    orders: Order[];
+    @ManyToOne(() => Order, (order) => order.items)
+    @JoinColumn({ name: 'idOrders' })
+    order: Order;
+
+    @ManyToOne(() => Item, (item) => item.subitems, {
+        nullable: true,
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({ name: 'parent_id' })
+    parent?: Item;
+
+    @OneToMany(() => Item, (item) => item.parent)
+    subitems: Item[];
 }
