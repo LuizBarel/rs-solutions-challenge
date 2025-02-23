@@ -17,6 +17,8 @@ import { TableService } from 'src/table/table.service';
 import { TaxInvoiceService } from 'src/tax-invoice/tax-invoice.service';
 import { TicketService } from 'src/ticket/ticket.service';
 import { Repository } from 'typeorm';
+import { Months } from 'src/utils/months';
+
 /* eslint-disable */
 
 @Injectable()
@@ -163,76 +165,125 @@ export class OrdersService {
         }
     }
 
-    async getInvoicingInAMonth() {
+    async getInvoicing() {
         const currentDate = new Date();
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
-        const previousMonth = month === 1 ? 12 : month - 1;
-        const previousYear = month === 1 ? year - 1 : year;
 
+        let totalMonthSum: any = await this.querySum();
         let currentMonthSum: any = await this.querySum(month, year);
-        let previousMonthSum: any = await this.querySum(
-            previousMonth,
-            previousYear,
-        );
-
-        previousMonthSum =
-            previousMonthSum != null && !isNaN(+previousMonthSum)
-                ? +previousMonthSum
-                : 0;
-        currentMonthSum = +currentMonthSum[0].sum;
-
-        const percent: number =
-            previousMonthSum == 0
-                ? 100
-                : ((+currentMonthSum - +previousMonthSum) / +previousMonthSum) *
-                  100;
 
         return {
-            currentSum: currentMonthSum,
-            previousSum: previousMonthSum,
-            percentBetweenSums: percent,
+            totalSum: +totalMonthSum[0].sum,
+            currentSum: +currentMonthSum[0].sum,
         };
     }
 
-    async getAllOrdersInAMonth() {
+    async getMonthlyInvoicing() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const previousYear = year - 1;
+
+        let thisYearInvoicings: Array<any> = [];
+        let lastYearInvoicings: Array<any> = [];
+
+        for (let month = 0; month < 12; month++) {
+            let title = `${Months[month]}`;
+
+            let currentMonthSum: any = await this.querySum(month + 1, year);
+            thisYearInvoicings.push({
+                [title]: +currentMonthSum[0].sum,
+            });
+
+            let previousMonthSum: any = await this.querySum(
+                month + 1,
+                previousYear,
+            );
+            lastYearInvoicings.push({
+                [title]: +previousMonthSum[0].sum,
+            });
+        }
+
+        return {
+            thisYearInvoicings,
+            lastYearInvoicings,
+        };
+    }
+
+    async getAllOrders() {
         const currentDate = new Date();
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
-        const previousMonth = month === 1 ? 12 : month - 1;
-        const previousYear = month === 1 ? year - 1 : year;
 
-        const qtdOrders = await this.queryCount(month, year);
-        const previousQtdOrders = await this.queryCount(
-            previousMonth,
-            previousYear,
+        const totalQtdOrders = await this.queryCount();
+        const currentQtdOrders = await this.queryCount(month, year);
+
+        return {
+            totalQtdOrders,
+            currentQtdOrders,
+        };
+    }
+
+    async getTicket() {
+        const { currentQtdOrders, totalQtdOrders } = await this.getAllOrders();
+        const { currentSum, totalSum } = await this.getInvoicing();
+
+        const currentTicket = totalSum / totalQtdOrders;
+        const monthlyTicket = currentSum / currentQtdOrders;
+
+        return {
+            currentTicket,
+            monthlyTicket,
+        };
+    }
+
+    async getOrdersByChannel() {
+        const totalByChannel = await this.queryByChannel([
+            'sale_channel.tag_salesChannel as channelTag, SUM(orders.total) as total, COUNT(DISTINCT orders.idOrders) as qtdOrders',
+        ]);
+        const itemsByChannel = await this.queryByChannel([
+            'sale_channel.tag_salesChannel as channelTag, SUM(item.quantity_items) AS qtdItems, COUNT(DISTINCT orders.idOrders) as qtdOrders',
+        ]);
+
+        const totalSum = totalByChannel.reduce(
+            (accumulator, channel) => accumulator + +channel.total,
+            0,
         );
 
-        return {
-            qtdOrders,
-            previousQtdOrders,
-        };
+        const finalResult = totalByChannel.map((channel) => {
+            const itemsData = itemsByChannel.find(
+                (item) => item.channeltag === channel.channeltag,
+            );
+
+            return {
+                channelTag: channel.channeltag,
+                qtdItems: itemsData ? itemsData.qtditems : 0,
+                qtdOrders: channel.qtdorders,
+                total: channel.total,
+                ticket: +channel.total / +channel.qtdorders,
+                percent: totalSum > 0 ? (+channel.total / totalSum) * 100 : 0,
+            };
+        });
+
+        return finalResult;
     }
 
-    async getMonthlyTicket() {
-        const { qtdOrders, previousQtdOrders } =
-            await this.getAllOrdersInAMonth();
-        const { currentSum, previousSum } = await this.getInvoicingInAMonth();
-
-        const ticket = currentSum / qtdOrders;
-        const previousTicket = previousSum / previousQtdOrders || 0;
-        return {
-            ticket,
-            previousTicket,
-        };
-    }
-
-    private async querySum(month, year) {
-        return await this.orderRepository
+    private async querySum(month?, year?) {
+        const queryBuilder = this.orderRepository
             .createQueryBuilder('orders')
-            .select(['SUM(orders.total)'])
-            .where('EXTRACT(MONTH FROM orders.updatedAt) = :month', { month })
-            .andWhere('EXTRACT(YEAR FROM orders.updatedAt) = :year', { year })
+            .select(['SUM(orders.total)']);
+
+        if (month && year) {
+            queryBuilder
+                .where('EXTRACT(MONTH FROM orders.updatedAt) = :month', {
+                    month,
+                })
+                .andWhere('EXTRACT(YEAR FROM orders.updatedAt) = :year', {
+                    year,
+                });
+        }
+
+        queryBuilder
             .andWhere('orders.status != :status', { status: 'canceled' })
             .innerJoin(
                 'payments',
@@ -241,16 +292,27 @@ export class OrdersService {
             )
             .andWhere('payment.status_payments = :paymentStatus', {
                 paymentStatus: 'approved',
-            })
-            .getRawMany();
+            });
+
+        return queryBuilder.getRawMany();
     }
 
-    private async queryCount(month, year) {
-        return await this.orderRepository
+    private async queryCount(month?, year?) {
+        const queryBuilder = this.orderRepository
             .createQueryBuilder('orders')
-            .select(['orders.id'])
-            .where('EXTRACT(MONTH FROM orders.updatedAt) = :month', { month })
-            .andWhere('EXTRACT(YEAR FROM orders.updatedAt) = :year', { year })
+            .select(['orders.id']);
+
+        if (month && year) {
+            queryBuilder
+                .where('EXTRACT(MONTH FROM orders.updatedAt) = :month', {
+                    month,
+                })
+                .andWhere('EXTRACT(YEAR FROM orders.updatedAt) = :year', {
+                    year,
+                });
+        }
+
+        queryBuilder
             .andWhere('orders.status != :status', { status: 'canceled' })
             .innerJoin(
                 'payments',
@@ -259,7 +321,38 @@ export class OrdersService {
             )
             .andWhere('payment.status_payments = :paymentStatus', {
                 paymentStatus: 'approved',
+            });
+
+        return queryBuilder.getCount();
+    }
+
+    private async queryByChannel(params: Array<string>) {
+        const queryBuilder = this.orderRepository
+            .createQueryBuilder('orders')
+            .select(params)
+            .where('orders.status != :status', { status: 'canceled' })
+            .andWhere('payment.status_payments = :paymentStatus', {
+                paymentStatus: 'approved',
             })
-            .getCount();
+            .innerJoin(
+                'sales_channel',
+                'sale_channel',
+                'orders.salesChannel = sale_channel.idsalesChannel',
+            )
+            .groupBy('sale_channel.tag_salesChannel');
+
+        if (params.some((param) => param.includes('item'))) {
+            queryBuilder
+                .leftJoin('items', 'item', 'item.idOrders = orders.idOrders')
+                .andWhere('item.comboType IS NULL');
+        }
+
+        queryBuilder.leftJoin(
+            'payments',
+            'payment',
+            'payment.orderId = orders.idOrders',
+        );
+
+        return await queryBuilder.getRawMany();
     }
 }

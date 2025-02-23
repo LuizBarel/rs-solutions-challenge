@@ -5,18 +5,28 @@ import { OrdersService } from './orders.service';
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {}
 
-    @Get('ordersInAMonth')
+    @Get('')
     async getOrders() {
-        return this.ordersService.getAllOrdersInAMonth();
+        return this.ordersService.getAllOrders();
     }
 
-    @Get('invoicingInAMonth')
+    @Get('invoicing')
     async getInvoicing() {
-        return this.ordersService.getInvoicingInAMonth();
+        return this.ordersService.getInvoicing();
+    }
+
+    @Get('month-invoicing')
+    async getMonthlyInvoicing() {
+        return this.ordersService.getMonthlyInvoicing();
     }
 
     @Get('ticket')
     async getTicket() {
-        return this.ordersService.getMonthlyTicket();
+        return this.ordersService.getTicket();
+    }
+
+    @Get('channels')
+    async getByChannels() {
+        return this.ordersService.getOrdersByChannel();
     }
 }
