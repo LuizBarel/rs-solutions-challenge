@@ -112,8 +112,8 @@ export class SeruApiService {
      * @returns Promise<Object> data
      */
     async getAllOrders(
-        optionalDate?,
-        optionalPreviousDate?,
+        optionalDate?: string,
+        optionalPreviousDate?: string,
     ): Promise<Array<any>> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
@@ -139,8 +139,8 @@ export class SeruApiService {
      * @returns Promise<Object> data
      */
     async getAllCashiers(
-        optionalDate?,
-        optionalPreviousDate?,
+        optionalDate?: string,
+        optionalPreviousDate?: string,
     ): Promise<Array<object>> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
