@@ -16,7 +16,7 @@ import { SalesChannelService } from 'src/sales-channel/sales-channel.service';
 import { TableService } from 'src/table/table.service';
 import { TaxInvoiceService } from 'src/tax-invoice/tax-invoice.service';
 import { TicketService } from 'src/ticket/ticket.service';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Months } from 'src/utils/months';
 
 /* eslint-disable */
@@ -24,6 +24,7 @@ import { Months } from 'src/utils/months';
 @Injectable()
 export class OrdersService {
     constructor(
+        private dataSource: DataSource,
         @InjectRepository(Order)
         private orderRepository: Repository<Order>,
         private salesService: SalesChannelService,
@@ -42,95 +43,163 @@ export class OrdersService {
         private cancelAuthorizedByService: CancelAuthorizedByService,
     ) {}
 
+    /**
+     * Função para cadastrar pedidos que vem da rota (recebe um array para ser percorrido)
+     * @param data dados pego da API (na rota de orders)
+     */
     async create(data) {
-        for (const order of data) {
-            const existingOrder = await this.orderRepository.findOneBy({
-                stringOrder: order.id,
-            });
-            if (existingOrder) continue;
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-            let sales,
-                company,
-                cashier,
-                customer,
-                taxInvoice,
-                delivery,
-                table,
-                ticket,
-                createdBy,
-                canceledBy,
-                cancelAuthorizedBy;
+        try {
+            /**
+             * Arrow function para criar vários serviços e métodos a serem executados
+             * @param service nome do serviço
+             * @param key chave que será pega do pedido para enviar ao método
+             * @param order pedido atual do loop
+             * @param method método que será executado do serviço, por padrão é o create
+             * @returns resultado do método, geralmente um dado cadastrado para fazer o relacionamento
+             */
+            const createServiceForOrder = async (
+                service,
+                key,
+                order,
+                method = 'create',
+            ) => {
+                if (order[key]) {
+                    return await service[method](order[key], queryRunner);
+                }
+            };
 
-            if (order.salesChannel)
-                sales = await this.salesService.create(order.salesChannel);
-            if (order.company)
-                company = await this.companyService.create(order.company);
-            if (order.cashier)
-                cashier = await this.cashierService.createForOrder(
-                    order.cashier,
+            for (const order of data) {
+                const existingOrder = await queryRunner.manager.findOneBy(
+                    Order,
+                    { stringOrder: order.id },
                 );
-            if (order.customer)
-                customer = await this.customerService.create(order.customer);
-            if (order.taxInvoice)
-                taxInvoice = await this.taxInvoiceService.create(
-                    order.taxInvoice,
+                if (existingOrder) continue;
+
+                const [
+                    sales,
+                    company,
+                    cashier,
+                    customer,
+                    taxInvoice,
+                    delivery,
+                    table,
+                    ticket,
+                    createdBy,
+                    canceledBy,
+                    cancelAuthorizedBy,
+                ] = await Promise.all([
+                    createServiceForOrder(
+                        this.salesService,
+                        'salesChannel',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.companyService,
+                        'company',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.cashierService,
+                        'cashiers',
+                        order,
+                        'createForOrder',
+                    ),
+                    createServiceForOrder(
+                        this.customerService,
+                        'customer',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.taxInvoiceService,
+                        'taxInvoice',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.deliveryService,
+                        'delivery',
+                        order,
+                    ),
+                    createServiceForOrder(this.tableService, 'table', order),
+                    createServiceForOrder(this.ticketService, 'ticket', order),
+                    createServiceForOrder(
+                        this.createdByService,
+                        'createdBy',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.canceledByService,
+                        'canceledBy',
+                        order,
+                    ),
+                    createServiceForOrder(
+                        this.cancelAuthorizedByService,
+                        'cancelAuthorizedBy',
+                        order,
+                    ),
+                ]);
+
+                const dataForOrder = queryRunner.manager.create(Order, {
+                    stringOrder: order.id,
+                    status: order.status,
+                    type: order.type,
+                    code: order.code,
+                    salesChannel: sales,
+                    createdAt: order.createdAt,
+                    updatedAt: order.updatedAt,
+                    company: company,
+                    discount: order.discount,
+                    serviceCharge: order.serviceCharge,
+                    subtotal: order.subtotal,
+                    total: order.total,
+                    customer: customer,
+                    taxInvoice: taxInvoice,
+                    note: order.note,
+                    appVersion: order.appVersion,
+                    delivery: delivery,
+                    consumingMode: order.consumingMode,
+                    table: table,
+                    ticket: ticket,
+                    cashiers: cashier,
+                    createdBy: createdBy,
+                    canceledAt: order.canceledAt,
+                    canceledBy: canceledBy,
+                    cancelAuthorizedBy: cancelAuthorizedBy,
+                    responseOriginJson: order,
+                });
+
+                const createdOrder = await queryRunner.manager.save(
+                    Order,
+                    dataForOrder,
                 );
-            if (order.delivery)
-                delivery = await this.deliveryService.create(order.delivery);
-            if (order.table)
-                table = await this.tableService.create(order.table);
-            if (order.ticket)
-                ticket = await this.ticketService.create(order.ticket);
-            if (order.createdBy)
-                createdBy = await this.createdByService.create(order.createdBy);
-            if (order.canceledBy)
-                canceledBy = await this.canceledByService.create(
-                    order.canceledBy,
-                );
-            if (order.cancelAuthorizedBy)
-                cancelAuthorizedBy =
-                    await this.cancelAuthorizedByService.create(
-                        order.cancelAuthorizedBy,
-                    );
 
-            const dataForOrder = this.orderRepository.create({
-                status: order.status,
-                type: order.type,
-                code: order.code,
-                salesChannel: sales,
-                createdAt: order.createdAt,
-                updatedAt: order.updatedAt,
-                company: company,
-                discount: order.discount,
-                serviceCharge: order.serviceCharge,
-                subtotal: order.subtotal,
-                total: order.total,
-                customer: customer,
-                taxInvoice: taxInvoice,
-                note: order.note,
-                appVersion: order.appVersion,
-                delivery: delivery,
-                consumingMode: order.consumingMode,
-                table: table,
-                ticket: ticket,
-                cashiers: cashier,
-                createdBy: createdBy,
-                canceledAt: order.canceledAt,
-                canceledBy: canceledBy,
-                cancelAuthorizedBy: cancelAuthorizedBy,
-                stringOrder: order.id,
-                responseOriginJson: order,
-            });
-
-            const createdOrder = await this.orderRepository.save(dataForOrder);
-
-            for (const payment of order.payments) {
-                this.paymentsService.create(payment, createdOrder.idOrders);
+                await Promise.all([
+                    ...order.payments.map((payment) =>
+                        this.paymentsService.create(
+                            payment,
+                            queryRunner,
+                            createdOrder.idOrders,
+                        ),
+                    ),
+                    ...order.items.map((item) =>
+                        this.itemsService.create(
+                            item,
+                            createdOrder.idOrders,
+                            queryRunner,
+                        ),
+                    ),
+                ]);
             }
 
-            for (const item of order.items) {
-                this.itemsService.create(item, createdOrder.idOrders);
-            }
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            console.error('Erro ao criar o pedido:', error);
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
         }
     }
 

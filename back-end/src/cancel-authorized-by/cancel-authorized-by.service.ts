@@ -1,35 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CancelAuthorizedBy } from 'src/database/entities/cancel-authorized-by.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 // import { CreateCancelAuthorizedByDto } from './dto/create-cancel-authorized-by.dto';
 // import { UpdateCancelAuthorizedByDto } from './dto/update-cancel-authorized-by.dto';
 /* eslint-disable */
 
 @Injectable()
 export class CancelAuthorizedByService {
-    constructor(
-        @InjectRepository(CancelAuthorizedBy)
-        private cancelAuthorizedByRepository: Repository<CancelAuthorizedBy>,
-    ) {}
+    async create(cancelAuthorizedBy, queryRunner: QueryRunner) {
+        try {
+            const cancelAuthorizedByExisting =
+                await queryRunner.manager.findOneBy(CancelAuthorizedBy, {
+                    code: cancelAuthorizedBy.code,
+                });
+            if (cancelAuthorizedByExisting) return cancelAuthorizedByExisting;
 
-    async create(cancelAuthorizedBy) {
-        const cancelAuthorizedByExisting =
-            await this.cancelAuthorizedByRepository.findOneBy({
-                code: cancelAuthorizedBy.code,
-            });
-        if (cancelAuthorizedByExisting) return cancelAuthorizedByExisting;
+            const dataForCancelAuthorizedBy = queryRunner.manager.create(
+                CancelAuthorizedBy,
+                {
+                    name: cancelAuthorizedBy.name,
+                    email: cancelAuthorizedBy.email,
+                    document: cancelAuthorizedBy.document,
+                    code: cancelAuthorizedBy.code,
+                },
+            );
 
-        const dataForCancelAuthorizedBy =
-            this.cancelAuthorizedByRepository.create({
-                name: cancelAuthorizedBy.name,
-                email: cancelAuthorizedBy.email,
-                document: cancelAuthorizedBy.document,
-                code: cancelAuthorizedBy.code,
-            });
-
-        return this.cancelAuthorizedByRepository.save(
-            dataForCancelAuthorizedBy,
-        );
+            return await queryRunner.manager.save(
+                CancelAuthorizedBy,
+                dataForCancelAuthorizedBy,
+            );
+        } catch (error) {
+            console.log('Erro ao criar "cancelAuthorizedBy": ' + error);
+            throw error;
+        }
     }
 }

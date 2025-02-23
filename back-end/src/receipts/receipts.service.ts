@@ -1,33 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Receipt } from 'src/database/entities/receipt.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 // import { CreateReceiptDto } from './dto/create-receipt.dto';
 // import { UpdateReceiptDto } from './dto/update-receipt.dto';
 /* eslint-disable */
 
 @Injectable()
 export class ReceiptsService {
-    constructor(
-        @InjectRepository(Receipt)
-        private receiptRepository: Repository<Receipt>,
-    ) {}
+    async create(receipt, queryRunner: QueryRunner) {
+        try {
+            const receiptExisting = await queryRunner.manager.findOneBy(
+                Receipt,
+                {
+                    card: receipt.card,
+                    cash: receipt.cash,
+                    pix: receipt.pix,
+                },
+            );
+            if (receiptExisting) return receiptExisting;
 
-    async create(receipt) {
-        const receiptExisting = await this.receiptRepository.findOneBy({
-            card: receipt.card,
-            cash: receipt.cash,
-            pix: receipt.pix,
-        });
+            const dataForReceipt = queryRunner.manager.create(Receipt, {
+                card: receipt.card,
+                cash: receipt.cash,
+                pix: receipt.pix,
+            });
 
-        if (receiptExisting) return receiptExisting.idreceipts;
-
-        const dataForReceipt = this.receiptRepository.create({
-            card: receipt.card,
-            cash: receipt.cash,
-            pix: receipt.pix,
-        });
-
-        return await this.receiptRepository.save(dataForReceipt);
+            return await queryRunner.manager.save(Receipt, dataForReceipt);
+        } catch (error) {
+            console.log('Erro ao criar recibo: ' + error);
+            throw error;
+        }
     }
 }

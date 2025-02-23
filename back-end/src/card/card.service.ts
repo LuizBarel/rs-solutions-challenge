@@ -1,46 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Card } from 'src/database/entities/card.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 // import { CreateCardDto } from './dto/create-card.dto';
 // import { UpdateCardDto } from './dto/update-card.dto';
 /* eslint-disable */
 
 @Injectable()
 export class CardService {
-    constructor(
-        @InjectRepository(Card)
-        private cardRepository: Repository<Card>,
-    ) {}
-
-    async findOne(firstNums, lastNums) {
-        const card = await this.cardRepository.findOneBy({
+    async findOne(firstNums, lastNums, queryRunner: QueryRunner) {
+        const card = await queryRunner.manager.findOneBy(Card, {
             firstSixDigits: firstNums,
             lastFourDigits: lastNums,
         });
-        if (!card) return null;
-        return card;
+        return card || null;
     }
 
-    async create(card) {
-        const cardExisting = await this.findOne(
-            card.firstSixDigits,
-            card.lastFourDigits,
-        );
-        if (cardExisting) return cardExisting.idcard;
+    async create(card, queryRunner: QueryRunner) {
+        try {
+            const cardExisting = await this.findOne(
+                card.firstSixDigits,
+                card.lastFourDigits,
+                queryRunner,
+            );
+            if (cardExisting) return cardExisting;
 
-        const dataForCard = this.cardRepository.create({
-            brand: card.brand,
-            brandCode: card.brandCode,
-            nsu: card.nsu,
-            acquirer: card.acquirer,
-            authorizationCode: card.authorizationCode,
-            terminalNumber: card.terminalNumber,
-            installments: card.installments,
-            firstSixDigits: card.firstSixDigits,
-            lastFourDigits: card.lastFourDigits,
-        });
+            const dataForCard = queryRunner.manager.create(Card, {
+                brand: card.brand,
+                brandCode: card.brandCode,
+                nsu: card.nsu,
+                acquirer: card.acquirer,
+                authorizationCode: card.authorizationCode,
+                terminalNumber: card.terminalNumber,
+                installments: card.installments,
+                firstSixDigits: card.firstSixDigits,
+                lastFourDigits: card.lastFourDigits,
+            });
 
-        return this.cardRepository.save(dataForCard);
+            return queryRunner.manager.save(Card, dataForCard);
+        } catch (error) {
+            console.log('Erro ao criar cartão: ' + error);
+            throw error;
+        }
     }
 }
