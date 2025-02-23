@@ -13,8 +13,8 @@ import {
     orders,
     ticket,
     yearlyInvoicing,
+    channels,
     chartConfigBilling,
-    chartDataChannelSales,
     chartConfigChannelSales,
 } from './dashboard-functions';
 
@@ -98,6 +98,19 @@ export default function Dashboard() {
             currentYear: number;
             previousYear: number;
         }[];
+        chartChannels: {
+            channelTag: string;
+            percent: number;
+            fill: string;
+        }[];
+        tableChannels: {
+            channelTag: string;
+            qtdItems: string;
+            qtdOrders: string;
+            total: string;
+            ticket: number;
+            percent: number;
+        }[];
     };
 
     // Estado para armazenar um objeto com os dados vindos da API
@@ -115,6 +128,8 @@ export default function Dashboard() {
             monthly: 0,
         },
         yearlyInvoicing: [],
+        chartChannels: [],
+        tableChannels: [],
     });
 
     useEffect(() => {
@@ -122,6 +137,7 @@ export default function Dashboard() {
         orders(setData);
         ticket(setData);
         yearlyInvoicing(setData);
+        channels(setData);
     }, []);
 
     return (
@@ -343,9 +359,9 @@ export default function Dashboard() {
                                         />
 
                                         <Pie
-                                            data={chartDataChannelSales}
-                                            dataKey="sales"
-                                            nameKey="channel"
+                                            data={data.chartChannels}
+                                            dataKey="percent"
+                                            nameKey="channelTag"
                                             innerRadius={!isLaptop ? 110 : 70}
                                         ></Pie>
                                     </PieChart>
@@ -395,7 +411,9 @@ export default function Dashboard() {
                                             <TableHead>Vendas (R$)</TableHead>
                                             <TableHead>%</TableHead>
                                             <TableHead>Pedidos</TableHead>
-                                            <TableHead>Ticket Médio</TableHead>
+                                            <TableHead>
+                                                Ticket Médio (R$)
+                                            </TableHead>
                                             <TableHead>
                                                 Qtd de Produtos
                                             </TableHead>
@@ -403,36 +421,28 @@ export default function Dashboard() {
                                     </TableHeader>
 
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>Vitrine Totem</TableCell>
-                                            <TableCell>10.540.500,00</TableCell>
-                                            <TableCell>60%</TableCell>
-                                            <TableCell>67,982</TableCell>
-                                            <TableCell>42,89%</TableCell>
-                                            <TableCell>167,892</TableCell>
-                                        </TableRow>
-
-                                        <TableRow subrow={true}>
-                                            <TableCell icon={true}>
-                                                Salão
-                                            </TableCell>
-                                            <TableCell>7.540.500,00</TableCell>
-                                            <TableCell>40%</TableCell>
-                                            <TableCell>57,982</TableCell>
-                                            <TableCell>30,89%</TableCell>
-                                            <TableCell>127,892</TableCell>
-                                        </TableRow>
-
-                                        <TableRow subrow={true}>
-                                            <TableCell icon={true}>
-                                                Drive Thru
-                                            </TableCell>
-                                            <TableCell>3.000.000,00</TableCell>
-                                            <TableCell>20%</TableCell>
-                                            <TableCell>10,000</TableCell>
-                                            <TableCell>10%</TableCell>
-                                            <TableCell>50,000</TableCell>
-                                        </TableRow>
+                                        {data.tableChannels.map((channel) => (
+                                            <TableRow key={channel.channelTag}>
+                                                <TableCell>
+                                                    {channel.channelTag}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.total}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.percent}%
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.qtdOrders}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.ticket}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.qtdItems}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </m.div>
