@@ -12,8 +12,8 @@ import {
     invoicing,
     orders,
     ticket,
+    yearlyInvoicing,
     chartConfigBilling,
-    chartDataBilling,
     chartDataChannelSales,
     chartConfigChannelSales,
 } from './dashboard-functions';
@@ -93,6 +93,11 @@ export default function Dashboard() {
             current: string | number;
             monthly: string | number;
         };
+        yearlyInvoicing: {
+            month: string;
+            currentYear: number;
+            previousYear: number;
+        }[];
     };
 
     // Estado para armazenar um objeto com os dados vindos da API
@@ -109,12 +114,14 @@ export default function Dashboard() {
             current: 0,
             monthly: 0,
         },
+        yearlyInvoicing: [],
     });
 
     useEffect(() => {
         invoicing(setData);
         orders(setData);
         ticket(setData);
+        yearlyInvoicing(setData);
     }, []);
 
     return (
@@ -246,7 +253,7 @@ export default function Dashboard() {
                     >
                         <LineChart
                             accessibilityLayer
-                            data={chartDataBilling}
+                            data={data.yearlyInvoicing}
                             margin={
                                 isLaptop ? { left: -16, right: 4 } : undefined
                             }
@@ -281,17 +288,17 @@ export default function Dashboard() {
                             />
 
                             <Line
-                                dataKey="ano_atual"
+                                dataKey="currentYear"
                                 type="monotone"
-                                stroke="var(--color-ano_atual)"
+                                stroke="var(--color-currentYear)"
                                 strokeWidth={2}
                                 dot={false}
                             />
 
                             <Line
-                                dataKey="ano_anterior"
+                                dataKey="previousYear"
                                 type="monotone"
-                                stroke="var(--color-ano_anterior)"
+                                stroke="var(--color-previousYear)"
                                 strokeWidth={2}
                                 dot={false}
                             />
