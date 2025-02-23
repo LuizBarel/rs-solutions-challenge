@@ -4,18 +4,21 @@
 import { useEffect, useState } from 'react';
 
 import { LuBanknote, LuBox } from 'react-icons/lu';
-import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { LiaChartPieSolid, LiaCoinsSolid } from 'react-icons/lia';
 import { BiBarChartAlt2 } from 'react-icons/bi';
 import { MdFormatListBulleted } from 'react-icons/md';
 
 import {
+    invoicing,
+    orders,
+    ticket,
+    yearlyInvoicing,
+    channels,
     chartConfigBilling,
-    chartDataBilling,
-    chartDataChannelSales,
     chartConfigChannelSales,
-    tickFormatter,
-} from './dashboard-data';
+} from './dashboard-functions';
+
+import { tickFormatter } from '@/lib/format';
 
 import {
     ChartContainer,
@@ -76,6 +79,67 @@ export default function Dashboard() {
         setUsername(Cookies.get('sessionUsername') || 'Usuário');
     }, []);
 
+    // Tipando os dados vindos da API
+    type DashboardData = {
+        invoicing: {
+            total: string | number;
+            current: string | number;
+        };
+        orders: {
+            total: number;
+            current: number;
+        };
+        ticket: {
+            current: string | number;
+            monthly: string | number;
+        };
+        yearlyInvoicing: {
+            month: string;
+            currentYear: number;
+            previousYear: number;
+        }[];
+        chartChannels: {
+            channelTag: string;
+            percent: number;
+            fill: string;
+        }[];
+        tableChannels: {
+            channelTag: string;
+            qtdItems: string;
+            qtdOrders: string;
+            total: string;
+            ticket: number;
+            percent: number;
+        }[];
+    };
+
+    // Estado para armazenar um objeto com os dados vindos da API
+    const [data, setData] = useState<DashboardData>({
+        invoicing: {
+            total: 0,
+            current: 0,
+        },
+        orders: {
+            total: 0,
+            current: 0,
+        },
+        ticket: {
+            current: 0,
+            monthly: 0,
+        },
+        yearlyInvoicing: [],
+        chartChannels: [],
+        tableChannels: [],
+    });
+
+    useEffect(() => {
+        invoicing(setData);
+        orders(setData);
+        ticket(setData);
+        yearlyInvoicing(setData);
+        channels(setData);
+    }, []);
+
     return (
         <>
             <section
@@ -124,15 +188,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    R$ 2754,24
+                                    {data.invoicing.total}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-green-medium text-xs font-medium bg-green-light border-[0.5px] border-green-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowUp size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.invoicing.current}
                                     </p>
                                 </div>
                             </div>
@@ -151,15 +214,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    545
+                                    {data.orders.total}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-red-medium text-xs font-medium bg-red-light border-[0.5px] border-red-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowDown size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.orders.current}
                                     </p>
                                 </div>
                             </div>
@@ -178,15 +240,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    R$ 47,95
+                                    {data.ticket.current}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-green-medium text-xs font-medium bg-green-light border-[0.5px] border-green-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowUp size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.ticket.monthly}
                                     </p>
                                 </div>
                             </div>
@@ -208,7 +269,7 @@ export default function Dashboard() {
                     >
                         <LineChart
                             accessibilityLayer
-                            data={chartDataBilling}
+                            data={data.yearlyInvoicing}
                             margin={
                                 isLaptop ? { left: -16, right: 4 } : undefined
                             }
@@ -243,17 +304,17 @@ export default function Dashboard() {
                             />
 
                             <Line
-                                dataKey="ano_atual"
+                                dataKey="currentYear"
                                 type="monotone"
-                                stroke="var(--color-ano_atual)"
+                                stroke="var(--color-currentYear)"
                                 strokeWidth={2}
                                 dot={false}
                             />
 
                             <Line
-                                dataKey="ano_anterior"
+                                dataKey="previousYear"
                                 type="monotone"
-                                stroke="var(--color-ano_anterior)"
+                                stroke="var(--color-previousYear)"
                                 strokeWidth={2}
                                 dot={false}
                             />
@@ -298,9 +359,9 @@ export default function Dashboard() {
                                         />
 
                                         <Pie
-                                            data={chartDataChannelSales}
-                                            dataKey="sales"
-                                            nameKey="channel"
+                                            data={data.chartChannels}
+                                            dataKey="percent"
+                                            nameKey="channelTag"
                                             innerRadius={!isLaptop ? 110 : 70}
                                         ></Pie>
                                     </PieChart>
@@ -350,7 +411,9 @@ export default function Dashboard() {
                                             <TableHead>Vendas (R$)</TableHead>
                                             <TableHead>%</TableHead>
                                             <TableHead>Pedidos</TableHead>
-                                            <TableHead>Ticket Médio</TableHead>
+                                            <TableHead>
+                                                Ticket Médio (R$)
+                                            </TableHead>
                                             <TableHead>
                                                 Qtd de Produtos
                                             </TableHead>
@@ -358,36 +421,28 @@ export default function Dashboard() {
                                     </TableHeader>
 
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>Vitrine Totem</TableCell>
-                                            <TableCell>10.540.500,00</TableCell>
-                                            <TableCell>60%</TableCell>
-                                            <TableCell>67,982</TableCell>
-                                            <TableCell>42,89%</TableCell>
-                                            <TableCell>167,892</TableCell>
-                                        </TableRow>
-
-                                        <TableRow subrow={true}>
-                                            <TableCell icon={true}>
-                                                Salão
-                                            </TableCell>
-                                            <TableCell>7.540.500,00</TableCell>
-                                            <TableCell>40%</TableCell>
-                                            <TableCell>57,982</TableCell>
-                                            <TableCell>30,89%</TableCell>
-                                            <TableCell>127,892</TableCell>
-                                        </TableRow>
-
-                                        <TableRow subrow={true}>
-                                            <TableCell icon={true}>
-                                                Drive Thru
-                                            </TableCell>
-                                            <TableCell>3.000.000,00</TableCell>
-                                            <TableCell>20%</TableCell>
-                                            <TableCell>10,000</TableCell>
-                                            <TableCell>10%</TableCell>
-                                            <TableCell>50,000</TableCell>
-                                        </TableRow>
+                                        {data.tableChannels.map((channel) => (
+                                            <TableRow key={channel.channelTag}>
+                                                <TableCell>
+                                                    {channel.channelTag}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.total}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.percent}%
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.qtdOrders}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.ticket}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {channel.qtdItems}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </m.div>
