@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import {
     forwardRef,
+    HttpCode,
     Inject,
     Injectable,
     InternalServerErrorException,
@@ -15,7 +16,7 @@ import { getFormattedDates } from './helpers/dateForSearch';
 import { OrdersService } from 'src/orders/orders.service';
 import { CashiersService } from 'src/cashiers/cashiers.service';
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment */
 
 @Injectable()
 export class SeruApiService {
@@ -201,21 +202,22 @@ export class SeruApiService {
     /**
      * Função para popular o banco de dados
      */
+    @HttpCode(201)
     async populate() {
         try {
-            const firstData = await this.orderService.create(
+            await this.orderService.create(
                 await this.getAllOrders(
                     '2025-02-18T04:00:59Z',
                     '2025-02-18T04:00:40',
                 ),
             );
-            const secondData = await this.orderService.create(
+            await this.orderService.create(
                 await this.getAllOrders(
                     '2025-02-13T23:59:59Z',
                     '2025-02-13T00:00:00Z',
                 ),
             );
-            const thirdData = await this.orderService.create(
+            await this.orderService.create(
                 await this.getAllOrders(
                     '2025-02-14T23:59:59Z',
                     '2025-02-14T00:00:00Z',
@@ -223,11 +225,15 @@ export class SeruApiService {
             );
 
             this.logger.debug('Banco populado com sucesso');
-            return { firstData, secondData, thirdData };
+            return 'Banco populado com sucesso';
         } catch (error) {
             console.log(
                 'Ocorreu um erro ao popular os dados: ' + error.message,
             );
+            return {
+                message: 'Ocorreu um erro: ' + error.message,
+                code: error.code,
+            };
         }
     }
 
@@ -296,4 +302,4 @@ export class SeruApiService {
         );
     }
 }
-/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
+/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment */

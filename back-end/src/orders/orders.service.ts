@@ -40,7 +40,7 @@ export class OrdersService {
         private createdByService: CreatedByService,
         private canceledByService: CanceledByService,
         private cancelAuthorizedByService: CancelAuthorizedByService,
-    ) { }
+    ) {}
 
     async create(data) {
         for (const order of data) {
@@ -181,8 +181,8 @@ export class OrdersService {
             });
         }
 
-        thisYearInvoicings.push({ year })
-        lastYearInvoicings.push({ previousYear })
+        thisYearInvoicings.push({ year });
+        lastYearInvoicings.push({ previousYear });
 
         return {
             thisYearInvoicings,
@@ -213,7 +213,8 @@ export class OrdersService {
      * @returns { number, number }
      */
     async getTicket() {
-        const { currentQtdOrders, totalQtdOrders } = await this.getAllQtdOrders();
+        const { currentQtdOrders, totalQtdOrders } =
+            await this.getAllQtdOrders();
         const { currentSum, totalSum } = await this.getInvoicing();
 
         const currentTicket = totalSum / totalQtdOrders;

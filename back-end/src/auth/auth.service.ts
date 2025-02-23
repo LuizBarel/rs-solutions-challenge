@@ -10,7 +10,7 @@ export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
-    ) { }
+    ) {}
 
     @HttpCode(201)
     async signUp(dto: CreateUserDto) {
