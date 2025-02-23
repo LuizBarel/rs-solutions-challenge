@@ -33,7 +33,7 @@ export class SeruApiService {
         private orderService: OrdersService,
         @Inject(forwardRef(() => CashiersService))
         private cashierService: CashiersService,
-    ) {}
+    ) { }
 
     // ! para garantir retorno de dados (testando novas features) = tempo de intervalo de 24 horas
 
@@ -156,8 +156,8 @@ export class SeruApiService {
                 : minusOneHourDateFormatted,
             finalCreatedAt: optionalDate ? optionalDate : currentDateFormatted,
         };
+
         const data = await this.searchInAPI('cashiers', params);
-        await this.orderService.create(data);
 
         return data;
     }
@@ -205,37 +205,31 @@ export class SeruApiService {
     @HttpCode(201)
     async populate() {
         try {
-            await this.orderService.create(
-                await this.getAllOrders(
-                    '2025-02-18T04:00:59Z',
-                    '2025-02-18T04:00:40',
-                ),
-            );
-            await this.orderService.create(
-                await this.getAllOrders(
-                    '2025-02-13T23:59:59Z',
-                    '2025-02-13T00:00:00Z',
-                ),
-            );
-            await this.orderService.create(
-                await this.getAllOrders(
-                    '2025-02-14T23:59:59Z',
-                    '2025-02-14T00:00:00Z',
-                ),
-            );
+            const dateRanges = [
+                { firstDate: '2025-02-18T04:00:59Z', previousFirstDate: '2025-02-18T04:00:40' },
+                { firstDate: '2025-02-13T23:59:59Z', previousFirstDate: '2025-02-13T00:00:00Z' },
+                { firstDate: '2025-02-14T23:59:59Z', previousFirstDate: '2025-02-14T00:00:00Z' }
+            ];
 
-            this.logger.debug('Banco populado com sucesso');
-            return 'Banco populado com sucesso';
+            for (const { firstDate, previousFirstDate } of dateRanges) {
+                await this.orderService.create(await this.getAllOrders(firstDate, previousFirstDate));
+                await this.cashierService.create(await this.getAllCashiers(firstDate, previousFirstDate));
+            }
+
+            const { totalQtdOrders } = await this.orderService.getAllQtdOrders();
+            if (totalQtdOrders) {
+                this.logger.debug('Banco populado com sucesso');
+                return 'Banco populado com sucesso';
+            }
+
+            this.logger.debug('Não houve registros no banco');
+            return 'Não houve registros no banco';
         } catch (error) {
-            console.log(
-                'Ocorreu um erro ao popular os dados: ' + error.message,
-            );
-            return {
-                message: 'Ocorreu um erro: ' + error.message,
-                code: error.code,
-            };
+            console.log('Ocorreu um erro ao popular os dados: ' + error.message);
+            return { message: 'Ocorreu um erro: ' + error.message, code: error.code };
         }
     }
+
 
     /**
      * Função que executa todas as buscas necessárias na API de hora em hora
