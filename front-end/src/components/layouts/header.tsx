@@ -10,6 +10,8 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 
 import { HiOutlineUserCircle } from 'react-icons/hi2';
 
+import Cookies from 'js-cookie';
+
 export function Header() {
     // Estado para controlar o scroll da página
     const [isScrolled, setIsScrolled] = useState(false);
@@ -29,6 +31,13 @@ export function Header() {
         };
     }, []);
 
+    // Estado par armazenar o nome do usuário
+    const [username, setUsername] = useState<string | null>(null);
+
+    useEffect(() => {
+        setUsername(Cookies.get('sessionUsername') || 'Usuário');
+    }, []);
+
     return (
         <header
             className={cn(
@@ -43,7 +52,7 @@ export function Header() {
 
             <div className="flex items-center gap-[2px] select-none">
                 <HiOutlineUserCircle size={!isMobile ? 32 : 28} />
-                <p className="md:text-md text-sm text-gray-900">Usuário</p>
+                <p className="md:text-md text-sm text-gray-900">{username}</p>
             </div>
         </header>
     );

@@ -7,7 +7,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
     data: { token: string };
-    login: (token: string) => void;
+    login: (token: string, username: string) => void;
     logout: () => void;
 }
 
@@ -15,33 +15,37 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [data, setData] = useState(() => {
-        const storedToken = Cookies.get('sessionToken');
-        return { token: storedToken || '' };
+        const storedToken = Cookies.get('sessionToken') ?? '';
+        const storedUsername = Cookies.get('sessionUsername') ?? '';
+        return { token: storedToken, username: storedUsername };
     });
 
-    const login = (token: string) => {
-        setData({ token });
+    const login = (token: string, username: string) => {
+        setData({ token, username });
 
         Cookies.set('sessionToken', token, { expires: 7 });
+        Cookies.set('sessionUsername', username, { expires: 7 });
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         window.location.href = '/';
     };
 
     const logout = () => {
-        setData({ token: '' });
+        setData({ token: '', username: '' });
 
         Cookies.remove('sessionToken');
+        Cookies.remove('sessionUsername');
         delete api.defaults.headers.common['Authorization'];
 
         window.location.href = '/login';
     };
 
     useEffect(() => {
-        const storedToken = Cookies.get('sessionToken');
+        const storedToken = Cookies.get('sessionToken') ?? '';
+        const storedUsername = Cookies.get('sessionUsername') ?? '';
 
         if (storedToken) {
-            setData({ token: storedToken });
+            setData({ token: storedToken, username: storedUsername });
             api.defaults.headers.common['Authorization'] =
                 `Bearer ${storedToken}`;
         }
