@@ -4,18 +4,21 @@
 import { useEffect, useState } from 'react';
 
 import { LuBanknote, LuBox } from 'react-icons/lu';
-import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { LiaChartPieSolid, LiaCoinsSolid } from 'react-icons/lia';
 import { BiBarChartAlt2 } from 'react-icons/bi';
 import { MdFormatListBulleted } from 'react-icons/md';
 
 import {
+    invoicing,
+    orders,
+    ticket,
     chartConfigBilling,
     chartDataBilling,
     chartDataChannelSales,
     chartConfigChannelSales,
-    tickFormatter,
-} from './dashboard-data';
+} from './dashboard-functions';
+
+import { tickFormatter } from '@/lib/format';
 
 import {
     ChartContainer,
@@ -76,6 +79,44 @@ export default function Dashboard() {
         setUsername(Cookies.get('sessionUsername') || 'Usuário');
     }, []);
 
+    // Tipando os dados vindos da API
+    type DashboardData = {
+        invoicing: {
+            total: string | number;
+            current: string | number;
+        };
+        orders: {
+            total: number;
+            current: number;
+        };
+        ticket: {
+            current: string | number;
+            monthly: string | number;
+        };
+    };
+
+    // Estado para armazenar um objeto com os dados vindos da API
+    const [data, setData] = useState<DashboardData>({
+        invoicing: {
+            total: 0,
+            current: 0,
+        },
+        orders: {
+            total: 0,
+            current: 0,
+        },
+        ticket: {
+            current: 0,
+            monthly: 0,
+        },
+    });
+
+    useEffect(() => {
+        invoicing(setData);
+        orders(setData);
+        ticket(setData);
+    }, []);
+
     return (
         <>
             <section
@@ -124,15 +165,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    R$ 2754,24
+                                    {data.invoicing.total}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-green-medium text-xs font-medium bg-green-light border-[0.5px] border-green-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowUp size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.invoicing.current}
                                     </p>
                                 </div>
                             </div>
@@ -151,15 +191,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    545
+                                    {data.orders.total}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-red-medium text-xs font-medium bg-red-light border-[0.5px] border-red-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowDown size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.orders.current}
                                     </p>
                                 </div>
                             </div>
@@ -178,15 +217,14 @@ export default function Dashboard() {
 
                             <div className="flex flex-col w-full gap-1">
                                 <h4 className="text-gray-900 text-xl font-semibold">
-                                    R$ 47,95
+                                    {data.ticket.current}
                                 </h4>
                                 <div className="flex items-center gap-1">
-                                    <div className="flex items-center gap-[2px] p-[2px] text-green-medium text-xs font-medium bg-green-light border-[0.5px] border-green-pure rounded-lg">
-                                        1,3%
-                                        <IoArrowUp size={12} />
+                                    <div className="py-[2px] px-1 text-gray-600 text-xs font-medium bg-gray-50 border-[0.5px] border-gray-200 rounded-lg">
+                                        Nesse mês
                                     </div>
                                     <p className="text-gray-600 text-xs font-medium">
-                                        mês passado
+                                        {data.ticket.monthly}
                                     </p>
                                 </div>
                             </div>
