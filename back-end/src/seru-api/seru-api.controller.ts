@@ -1,37 +1,19 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { SeruApiService } from './seru-api.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 /* eslint-disable */
 
+@ApiTags('Seru-API Externa')
 @Controller('seru-api')
 export class SeruApiController {
     constructor(private readonly seruApiService: SeruApiService) {}
 
-    @Get('token')
-    async getToken() {
-        return this.seruApiService.generateToken();
-    }
-
-    @Get('orders')
-    async getOrders() {
-        return this.seruApiService.getAllOrders();
-    }
-
-    @Get('cashiers')
-    async getCashiers() {
-        return this.seruApiService.getAllCashiers();
-    }
-
-    @Get('cashiers/:id')
-    async getCashiersId(@Param() id) {
-        return this.seruApiService.getOneCashier(id);
-    }
-
-    @Get('taxInvoices')
-    async getTaxInvoices() {
-        return this.seruApiService.getAllTaxInvoices();
-    }
-
     @Get('populate')
+    @ApiOperation({
+        summary:
+            'Rota para popular o banco de dados com alguns dados da SeruAPI',
+    })
+    @ApiResponse({ status: 200, description: 'Mensagem de sucesso' })
     async populate() {
         return this.seruApiService.populate();
     }

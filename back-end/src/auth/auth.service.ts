@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpCode, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/database/entities/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -12,6 +12,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
+    @HttpCode(201)
     async signUp(dto: CreateUserDto) {
         const user: User | null = await this.userService.findOneByEmail(
             dto.email,

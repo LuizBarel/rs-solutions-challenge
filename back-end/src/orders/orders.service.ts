@@ -92,37 +92,6 @@ export class OrdersService {
                     await this.cancelAuthorizedByService.create(
                         order.cancelAuthorizedBy,
                     );
-            if (order.salesChannel)
-                sales = await this.salesService.create(order.salesChannel);
-            if (order.company)
-                company = await this.companyService.create(order.company);
-            if (order.cashier)
-                cashier = await this.cashierService.createForOrder(
-                    order.cashier,
-                );
-            if (order.customer)
-                customer = await this.customerService.create(order.customer);
-            if (order.taxInvoice)
-                taxInvoice = await this.taxInvoiceService.create(
-                    order.taxInvoice,
-                );
-            if (order.delivery)
-                delivery = await this.deliveryService.create(order.delivery);
-            if (order.table)
-                table = await this.tableService.create(order.table);
-            if (order.ticket)
-                ticket = await this.ticketService.create(order.ticket);
-            if (order.createdBy)
-                createdBy = await this.createdByService.create(order.createdBy);
-            if (order.canceledBy)
-                canceledBy = await this.canceledByService.create(
-                    order.canceledBy,
-                );
-            if (order.cancelAuthorizedBy)
-                cancelAuthorizedBy =
-                    await this.cancelAuthorizedByService.create(
-                        order.cancelAuthorizedBy,
-                    );
 
             const dataForOrder = this.orderRepository.create({
                 status: order.status,
@@ -165,6 +134,10 @@ export class OrdersService {
         }
     }
 
+    /**
+     * Função para pegar o faturamento total e mensal
+     * @returns { number, number }
+     */
     async getInvoicing() {
         const currentDate = new Date();
         const month = currentDate.getMonth() + 1;
@@ -179,6 +152,10 @@ export class OrdersService {
         };
     }
 
+    /**
+     * Função que retorna os faturamentos de cada mês deste ano e do ano passado
+     * @returns { Array, Array }
+     */
     async getMonthlyInvoicing() {
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -204,13 +181,20 @@ export class OrdersService {
             });
         }
 
+        thisYearInvoicings.push({ year });
+        lastYearInvoicings.push({ previousYear });
+
         return {
             thisYearInvoicings,
             lastYearInvoicings,
         };
     }
 
-    async getAllOrders() {
+    /**
+     * Função que busca a quantidade total e mensal de pedidos
+     * @returns { number, number }
+     */
+    async getAllQtdOrders() {
         const currentDate = new Date();
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
@@ -224,8 +208,13 @@ export class OrdersService {
         };
     }
 
+    /**
+     * Função para retornar o ticket total e mensal
+     * @returns { number, number }
+     */
     async getTicket() {
-        const { currentQtdOrders, totalQtdOrders } = await this.getAllOrders();
+        const { currentQtdOrders, totalQtdOrders } =
+            await this.getAllQtdOrders();
         const { currentSum, totalSum } = await this.getInvoicing();
 
         const currentTicket = totalSum / totalQtdOrders;
@@ -237,6 +226,10 @@ export class OrdersService {
         };
     }
 
+    /**
+     * Função para retornar dados de pedidos (quantidade, qtd de itens, faturamento total, ticket, tag do canal e porcentagem perante ao total de todos os canais) filtrados por canal
+     * @returns { string, number, number, number, number. number }
+     */
     async getOrdersByChannel() {
         const totalByChannel = await this.queryByChannel([
             'sale_channel.tag_salesChannel as channelTag, SUM(orders.total) as total, COUNT(DISTINCT orders.idOrders) as qtdOrders',
@@ -268,6 +261,11 @@ export class OrdersService {
         return finalResult;
     }
 
+    /**
+     * Função para retornar a soma do valor total dos pedidos, podendo ser mensal ou de todos os registros (passe mês e ano no argumento se quer mensal)
+     *
+     * Vale ressaltar que a lógica para considerar um pedido é: ele não pode ter sido cancelado E seu pagamento precisa ser aprovado (pedidos com pagamentos em "awaiting" não entram na soma)
+     */
     private async querySum(month?, year?) {
         const queryBuilder = this.orderRepository
             .createQueryBuilder('orders')
@@ -297,6 +295,11 @@ export class OrdersService {
         return queryBuilder.getRawMany();
     }
 
+    /**
+     * Função para retornar a contagem de pedidos feitos, podendo ser mensal ou de todos os registros (passe mês e ano no argumento se quer mensal)
+     *
+     * A lógica para considerar um pedido é: ele não pode ter sido cancelado E seu pagamento precisa ser aprovado (pedidos com pagamentos em "awaiting" não entram na soma)
+     */
     private async queryCount(month?, year?) {
         const queryBuilder = this.orderRepository
             .createQueryBuilder('orders')
@@ -326,6 +329,13 @@ export class OrdersService {
         return queryBuilder.getCount();
     }
 
+    /**
+     * Função para retornar dados agrupados por canal, os dados retornado da consulta varia do que é passado no parâmetro, buscas com itens tem a consulta modificada
+     *
+     * A lógica para considerar um pedido é: ele não pode ter sido cancelado E seu pagamento precisa ser aprovado (pedidos com pagamentos em "awaiting" não entram na soma)
+     *
+     * A lógica para considerar um item é: ele não pode ter "typeCombo", ou seja, ser um combo (pois já contamos os itens de um combo separadamente)
+     */
     private async queryByChannel(params: Array<string>) {
         const queryBuilder = this.orderRepository
             .createQueryBuilder('orders')
