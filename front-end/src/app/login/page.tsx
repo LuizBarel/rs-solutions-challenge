@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import { BiErrorAlt } from 'react-icons/bi';
 
 import { authUser } from './login-functions';
 import { useAuth } from '@/contexts/authContext';
@@ -59,29 +60,37 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-            await authUser(inputsValue.email, inputsValue.password, login);
+            await authUser(
+                inputsValue.email,
+                inputsValue.password,
+                login,
+                setErrorMessage,
+            );
         } finally {
             setIsLoading(false);
         }
     };
 
     // Estado para armazenar a mensagem vinda do localStorage após o registro de um usuário
-    const [message, setMessage] = useState('');
+    const [userMessage, setUserMessage] = useState('');
+
+    // Estado para armazenar o erro de login
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const registerMessage = localStorage.getItem('registerMessage');
 
         if (registerMessage) {
-            setMessage(registerMessage);
+            setUserMessage(registerMessage);
             localStorage.removeItem('registerMessage');
         }
     }, []);
 
     useEffect(() => {
-        if (message) {
-            toast.success(message);
+        if (userMessage) {
+            toast.success(userMessage);
         }
-    }, [message]);
+    }, [userMessage]);
 
     return (
         <main className="grid md:grid-cols-2 h-screen overflow-hidden">
@@ -171,6 +180,13 @@ export default function Login() {
                                     )}
                                 </div>
                             </div>
+
+                            {errorMessage ? (
+                                <div className="center gap-1 p-4 text-red-medium text-sm font-medium bg-red-light border border-red-pure rounded-lg">
+                                    <BiErrorAlt size={20} />
+                                    {errorMessage}
+                                </div>
+                            ) : undefined}
                         </div>
 
                         <Button variant="default" onClick={handleLogin}>

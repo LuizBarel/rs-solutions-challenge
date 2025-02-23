@@ -1,6 +1,8 @@
 // Definindo o componente para ser renderizado no lado do cliente (client side)
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { LuBanknote, LuBox } from 'react-icons/lu';
 import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { LiaChartPieSolid, LiaCoinsSolid } from 'react-icons/lia';
@@ -49,6 +51,8 @@ import { useInView } from 'react-intersection-observer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useIsLaptop } from '@/hooks/use-laptop';
 
+import Cookies from 'js-cookie';
+
 export default function Dashboard() {
     const isMobile = useIsMobile();
     const isLaptop = useIsLaptop();
@@ -65,6 +69,13 @@ export default function Dashboard() {
         threshold: 0.4,
     });
 
+    // Estado par armazenar o nome do usuário
+    const [username, setUsername] = useState<string | null>(null);
+
+    useEffect(() => {
+        setUsername(Cookies.get('sessionUsername') || 'Usuário');
+    }, []);
+
     return (
         <>
             <section
@@ -72,7 +83,7 @@ export default function Dashboard() {
                 className="flex flex-col gap-4 xl:w-2/4 lg:w-3/4 w-full"
             >
                 <h1 className="text-gray-900 md:text-6xl text-4xl font-semibold">
-                    Olá, <span className="text-primary-700">Usuário</span>
+                    Olá, <span className="text-primary-700">{username}</span>
                 </h1>
                 <p className="text-gray-600 md:text-lg text-md">
                     Utilize todos os gráficos nesse dashboard para controlar as

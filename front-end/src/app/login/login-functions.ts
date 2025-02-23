@@ -3,7 +3,8 @@ import api from '@/lib/api';
 export const authUser = async (
     email: string,
     password: string,
-    login: (token: string) => void,
+    login: (token: string, username: string) => void,
+    setErrorMessage: (message: string) => void,
 ) => {
     try {
         const response = await api.post('/auth/signin', {
@@ -11,13 +12,16 @@ export const authUser = async (
             password,
         });
 
-        if (response.data) {
+        if (response.data.accessToken) {
             const token = response.data.accessToken;
+            const username = response.data.username;
 
-            login(token);
+            login(token, username);
             return token;
+        } else if (response.data.status === 400) {
+            setErrorMessage(response.data.message);
         } else {
-            console.log('Erro ao fazer login.');
+            setErrorMessage(response.data);
         }
     } catch (error) {
         console.error(error);
