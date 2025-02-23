@@ -12,7 +12,7 @@ export class Address {
     @Column({ length: 255 })
     neighborhood: string;
 
-    @Column({ length: 100 })
+    @Column({ length: 100, nullable: true })
     city: string;
 
     @Column({ length: 100, nullable: true })

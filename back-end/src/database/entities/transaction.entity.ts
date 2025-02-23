@@ -14,7 +14,7 @@ export class Transaction {
     @PrimaryGeneratedColumn()
     idtransactions: number;
 
-    @Column()
+    @Column({ unique: true })
     stringTransactions: string;
 
     @Column({ type: 'decimal', precision: 25, scale: 2 })

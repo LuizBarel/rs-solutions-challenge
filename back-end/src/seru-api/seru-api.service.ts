@@ -111,7 +111,10 @@ export class SeruApiService {
      * Função para pegar todos os pedidos no intervalo de uma hora
      * @returns Promise<Object> data
      */
-    async getAllOrders(): Promise<Array<any>> {
+    async getAllOrders(
+        optionalDate?: string,
+        optionalPreviousDate?: string,
+    ): Promise<Array<any>> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
         }
@@ -120,8 +123,10 @@ export class SeruApiService {
             getFormattedDates();
 
         const params: object = {
-            initialUpdatedAt: minusOneHourDateFormatted,
-            finalUpdatedAt: currentDateFormatted,
+            initialUpdatedAt: optionalPreviousDate
+                ? optionalPreviousDate
+                : minusOneHourDateFormatted,
+            finalUpdatedAt: optionalDate ? optionalDate : currentDateFormatted,
         };
 
         const data = await this.searchInAPI('orders', params);
@@ -133,7 +138,10 @@ export class SeruApiService {
      * Função para pegar todos os caixas no intervalo de uma hora
      * @returns Promise<Object> data
      */
-    async getAllCashiers(): Promise<Array<object>> {
+    async getAllCashiers(
+        optionalDate?: string,
+        optionalPreviousDate?: string,
+    ): Promise<Array<object>> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
         }
@@ -142,14 +150,20 @@ export class SeruApiService {
             getFormattedDates();
 
         const params: object = {
-            initialCreatedAt: minusOneHourDateFormatted,
-            finalCreatedAt: currentDateFormatted,
+            initialCreatedAt: optionalPreviousDate
+                ? optionalPreviousDate
+                : minusOneHourDateFormatted,
+            finalCreatedAt: optionalDate ? optionalDate : currentDateFormatted,
         };
         const data = await this.searchInAPI('cashiers', params);
+        await this.orderService.create(data);
 
         return data;
     }
 
+    /**
+     * Busca um caixa especifico
+     */
     async getOneCashier(body): Promise<any> {
         if (this.token == null) {
             await this.scheduleGenerateToken();
@@ -185,6 +199,39 @@ export class SeruApiService {
     }
 
     /**
+     * Função para popular o banco de dados
+     */
+    async populate() {
+        try {
+            const firstData = await this.orderService.create(
+                await this.getAllOrders(
+                    '2025-02-18T04:00:59Z',
+                    '2025-02-18T04:00:40',
+                ),
+            );
+            const secondData = await this.orderService.create(
+                await this.getAllOrders(
+                    '2025-02-13T23:59:59Z',
+                    '2025-02-13T00:00:00Z',
+                ),
+            );
+            const thirdData = await this.orderService.create(
+                await this.getAllOrders(
+                    '2025-02-14T23:59:59Z',
+                    '2025-02-14T00:00:00Z',
+                ),
+            );
+
+            this.logger.debug('Banco populado com sucesso');
+            return { firstData, secondData, thirdData };
+        } catch (error) {
+            console.log(
+                'Ocorreu um erro ao popular os dados: ' + error.message,
+            );
+        }
+    }
+
+    /**
      * Função que executa todas as buscas necessárias na API de hora em hora
      */
     @Cron(CronExpression.EVERY_HOUR)
@@ -208,7 +255,7 @@ export class SeruApiService {
 
     /**
      * Função usada no job para buscar token
-     * ? funções usadas no job não contêm a lógica, apenas executa e recebe o retorno da função com a lógica e emite um log
+     * ? funções usadas no job não contêm a lógica de busca, apenas executa e recebe o retorno da função, salva e emite um log
      */
     async scheduleGenerateToken(): Promise<any> {
         this.token = await this.generateToken();
@@ -246,19 +293,6 @@ export class SeruApiService {
             data.length > 1,
             'Caixas recuperados com sucesso',
             'Não há caixas para recuperar',
-        );
-    }
-
-    /**
-     * Função usada no job para buscar todos as notas fiscais
-     */
-    async scheduleGetTaxInvoices(): Promise<any> {
-        const data: Array<any> = await this.getAllTaxInvoices();
-
-        this.sendDebugMessage(
-            data.length > 1,
-            'Notas recuperados com sucesso',
-            'Não há notas para recuperar',
         );
     }
 }

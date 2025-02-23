@@ -30,4 +30,9 @@ export class SeruApiController {
     async getTaxInvoices() {
         return this.seruApiService.getAllTaxInvoices();
     }
+
+    @Get('populate')
+    async populate() {
+        return this.seruApiService.populate();
+    }
 }
