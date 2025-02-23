@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BlockedBy } from 'src/database/entities/blocked-by.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 // import { CreateBlockedByDto } from './dto/create-blocked-by.dto';
 // import { UpdateBlockedByDto } from './dto/update-blocked-by.dto';
 /* eslint-disable */
 
 @Injectable()
 export class BlockedByService {
-    constructor(
-        @InjectRepository(BlockedBy)
-        private blockedByRepository: Repository<BlockedBy>,
-    ) {}
+    async create(blockedBy, queryRunner: QueryRunner) {
+        try {
+            const blockedByExisting = await queryRunner.manager.findOneBy(
+                BlockedBy,
+                { code: blockedBy.code },
+            );
+            if (blockedByExisting) return blockedByExisting.idblockedBy;
 
-    async create(blockedBy) {
-        const blockedByExisting = await this.blockedByRepository.findOneBy({
-            code: blockedBy.code,
-        });
-        if (blockedByExisting) return blockedByExisting.idblockedBy;
+            const dataForBlockedBy = queryRunner.manager.create(BlockedBy, {
+                name: blockedBy.name,
+                email: blockedBy.email,
+                document: blockedBy.document,
+                code: blockedBy.code,
+            });
 
-        const dataForBlockedBy = this.blockedByRepository.create({
-            name: blockedBy.name,
-            email: blockedBy.email,
-            document: blockedBy.document,
-            code: blockedBy.code,
-        });
-
-        return this.blockedByRepository.save(dataForBlockedBy);
+            return queryRunner.manager.save(BlockedBy, dataForBlockedBy);
+        } catch (error) {
+            console.log('Erro ao criar "blockedBy": ' + error);
+            throw error;
+        }
     }
 }

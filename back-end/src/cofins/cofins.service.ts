@@ -1,32 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Cofins } from 'src/database/entities/cofin.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 // import { CreateCofinDto } from './dto/create-cofin.dto';
 // import { UpdateCofinDto } from './dto/update-cofin.dto';
 /* eslint-disable */
 
 @Injectable()
 export class CofinsService {
-    constructor(
-        @InjectRepository(Cofins)
-        private readonly cofinsRepository: Repository<Cofins>,
-    ) {}
+    async create(cofins, queryRunner: QueryRunner) {
+        try {
+            const existingCofins = await queryRunner.manager.findOneBy(Cofins, {
+                cst: cofins.cst,
+                aliq: cofins.aliq,
+            });
+            if (existingCofins) return existingCofins;
 
-    async create(cofins) {
-        const existingCofins = await this.cofinsRepository.findOneBy({
-            cst: cofins.cst,
-            aliq: cofins.aliq,
-        });
-        if (existingCofins) return existingCofins;
+            const dataForCofins = queryRunner.manager.create(Cofins, {
+                aliq: cofins.aliq,
+                cst: cofins.cst,
+                value: cofins.value,
+                calculationBasis: cofins.calculationBasis,
+            });
 
-        const dataForIcms = this.cofinsRepository.create({
-            aliq: cofins.aliq,
-            cst: cofins.cst,
-            value: cofins.value,
-            calculationBasis: cofins.calculationBasis,
-        });
-
-        return this.cofinsRepository.save(dataForIcms);
+            return await queryRunner.manager.save(Cofins, dataForCofins);
+        } catch (error) {
+            console.log('Erro ao criar cofins: ' + error);
+            throw error;
+        }
     }
 }
