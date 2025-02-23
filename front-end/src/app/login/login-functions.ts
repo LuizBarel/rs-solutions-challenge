@@ -4,6 +4,7 @@ export const authUser = async (
     email: string,
     password: string,
     login: (token: string) => void,
+    setErrorMessage: (message: string) => void,
 ) => {
     try {
         const response = await api.post('/auth/signin', {
@@ -11,13 +12,15 @@ export const authUser = async (
             password,
         });
 
-        if (response.data) {
+        if (response.data.accessToken) {
             const token = response.data.accessToken;
 
             login(token);
             return token;
+        } else if (response.data.status === 400) {
+            setErrorMessage(response.data.message);
         } else {
-            console.log('Erro ao fazer login.');
+            setErrorMessage(response.data);
         }
     } catch (error) {
         console.error(error);
