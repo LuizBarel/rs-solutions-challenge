@@ -408,6 +408,7 @@ O processo de UI/UX desse projeto foi desenvolvido com a ferramenta `Figma`, uti
           <b>Giovani Bianchi</b>
         </sub>
       </a>
+        <p>Front-End e Design</p>
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/luiz-barel-58570429b/" target="_blank" title="LinkedIn">
@@ -416,6 +417,7 @@ O processo de UI/UX desse projeto foi desenvolvido com a ferramenta `Figma`, uti
           <b>Luiz Barel</b>
         </sub>
       </a>
+        <p>Back-End e Docker</p>
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/yan-ernesto-97751a1b8/" target="_blank" title="LinkedIn">
@@ -424,6 +426,7 @@ O processo de UI/UX desse projeto foi desenvolvido com a ferramenta `Figma`, uti
           <b>Yan Ernesto</b>
         </sub>
       </a>
+        <p>Database e Entities</p>
     </td>
   </tr>
 </table>
