@@ -166,14 +166,19 @@ export const channels = async (
                 percent: number;
             }
 
-            const tableData = response.data.map((channel: TableChannel) => ({
-                channelTag: channel.channelTag,
-                qtdItems: channel.qtdItems,
-                qtdOrders: channel.qtdOrders,
-                total: brlFormatter.format(channel.total),
-                ticket: brlFormatter.format(channel.ticket),
-                percent: channel.percent.toFixed(2),
-            }));
+            const tableData = response.data
+                .map((channel: TableChannel) => ({
+                    channelTag: channel.channelTag,
+                    qtdItems: channel.qtdItems,
+                    qtdOrders: channel.qtdOrders,
+                    total: brlFormatter.format(channel.total),
+                    ticket: brlFormatter.format(channel.ticket),
+                    percent: channel.percent.toFixed(2),
+                }))
+                .sort(
+                    (a: { percent: string }, b: { percent: string }) =>
+                        parseFloat(b.percent) - parseFloat(a.percent),
+                );
 
             setData((prevData) => ({
                 ...prevData,
